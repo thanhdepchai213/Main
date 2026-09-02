@@ -1,0 +1,534 @@
+-- ============================================================
+-- RED MAGIC HUB – BLOX FRUITS CHECKER (3 PANEL, KHÔNG DÍNH)
+-- ============================================================
+-- Panel 2 (trái): Account Stats
+-- Panel 3 (phải): Status Checks
+-- Panel 1 (dưới): Farm Status + System Info
+-- Màu đỏ chủ đạo, drag, minimize, refresh
+-- ============================================================
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local lp = Players.LocalPlayer
+
+-- ===== HÀM LẤY INVENTORY =====
+local function GetInvMap()
+    local inv = {}
+    local success, data = pcall(function()
+        return ReplicatedStorage.Remotes.CommF_:InvokeServer("getInventory")
+    end)
+    if success and data then
+        for _, v in pairs(data) do
+            if type(v) == "table" and v.Name then
+                inv[v.Name] = true
+            end
+        end
+    end
+    return inv
+end
+
+-- ===== KIỂM TRA ITEM =====
+local function hasItem(name)
+    local inv = GetInvMap()
+    return inv[name] or (lp.Backpack and lp.Backpack:FindFirstChild(name) ~= nil) or (lp.Character and lp.Character:FindFirstChild(name) ~= nil)
+end
+
+-- ===== LẤY DỮ LIỆU NGƯỜI CHƠI =====
+local function getPlayerData()
+    local data = lp:FindFirstChild("Data")
+    local leaderstats = lp:FindFirstChild("leaderstats")
+    local level = data and data:FindFirstChild("Level") and data.Level.Value or 0
+    local beli = data and data:FindFirstChild("Beli") and data.Beli.Value or 0
+    local frag = data and data:FindFirstChild("Fragments") and data.Fragments.Value or 0
+    local race = data and data:FindFirstChild("Race") and data.Race.Value or "Unknown"
+    local thirdSea = false
+    pcall(function() thirdSea = game:GetService("BadgeService"):UserHasBadgeAsync(lp.UserId, 2125253113) end)
+    return {level = level, beli = beli, frag = frag, race = race, thirdSea = thirdSea}
+end
+
+-- ===== TẠO UI =====
+local gui = Instance.new("ScreenGui")
+gui.Name = "RedMagicChecker"
+gui.IgnoreGuiInset = true
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = game:GetService("CoreGui")
+
+-- Màu sắc
+local Colors = {
+    BG = Color3.fromRGB(12,12,15),
+    Surface = Color3.fromRGB(28,28,36),
+    SurfaceLight = Color3.fromRGB(42,42,55),
+    Primary = Color3.fromRGB(200, 50, 50),
+    Text = Color3.fromRGB(245,245,250),
+    TextSec = Color3.fromRGB(170,170,190),
+    TextMuted = Color3.fromRGB(110,110,130),
+    Success = Color3.fromRGB(80,220,120),
+    Error = Color3.fromRGB(240,80,80),
+    Border = Color3.fromRGB(60,60,75),
+}
+
+local function stroke(obj, col, thick, trans)
+    local s = Instance.new("UIStroke")
+    s.Color = col or Colors.Border
+    s.Thickness = thick or 1
+    s.Transparency = trans or 0.3
+    s.Parent = obj
+    return s
+end
+
+local function corner(obj, r)
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, r or 8)
+    c.Parent = obj
+    return c
+end
+
+-- Main Frame
+local main = Instance.new("Frame")
+main.Name = "Main"
+main.BackgroundColor3 = Colors.BG
+main.BackgroundTransparency = 0.15
+main.BorderSizePixel = 0
+main.AnchorPoint = Vector2.new(0.5,0.5)
+main.Position = UDim2.new(0.5,0,0.5,0)
+main.Size = UDim2.new(0, 480, 0, 360)
+main.ClipsDescendants = true
+main.Parent = gui
+corner(main, 10)
+stroke(main, Colors.Border, 1, 0.3)
+
+-- Blur
+local blur = Instance.new("BlurEffect", game:GetService("Lighting"))
+blur.Name = "RedMagicBlur"
+blur.Size = 52
+
+-- Title
+local title = Instance.new("TextLabel")
+title.Parent = main
+title.BackgroundTransparency = 1
+title.Position = UDim2.new(0, 14, 0, 6)
+title.Size = UDim2.new(0, 220, 0, 24)
+title.Font = Enum.Font.GothamBold
+title.Text = "Red Magic Checker"
+title.TextColor3 = Colors.Primary
+title.TextSize = 17
+title.TextXAlignment = Enum.TextXAlignment.Left
+stroke(title, Color3.fromRGB(0,0,0), 0.8, 0.45)
+
+-- Minimize
+local minBtn = Instance.new("TextButton")
+minBtn.Parent = main
+minBtn.BackgroundColor3 = Colors.Surface
+minBtn.BackgroundTransparency = 0
+minBtn.BorderSizePixel = 0
+minBtn.Position = UDim2.new(1, -28, 0, 5)
+minBtn.Size = UDim2.new(0, 20, 0, 20)
+minBtn.Text = "—"
+minBtn.TextColor3 = Colors.TextMuted
+minBtn.TextSize = 14
+minBtn.Font = Enum.Font.GothamBold
+corner(minBtn, 6)
+stroke(minBtn, Colors.Border, 1, 0.5)
+local minimized = false
+minBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    TweenService:Create(blur, TweenInfo.new(.35), {Size = minimized and 0 or 52}):Play()
+    TweenService:Create(main, TweenInfo.new(.35), {BackgroundTransparency = minimized and 1 or 0.15}):Play()
+    for _, child in ipairs(main:GetChildren()) do
+        if child:IsA("GuiObject") and child ~= minBtn then
+            TweenService:Create(child, TweenInfo.new(.35), {Visible = not minimized}):Play()
+        end
+    end
+end)
+
+-- Refresh
+local refreshBtn = Instance.new("TextButton")
+refreshBtn.Parent = main
+refreshBtn.BackgroundColor3 = Colors.SurfaceLight
+refreshBtn.BackgroundTransparency = 0.2
+refreshBtn.BorderSizePixel = 0
+refreshBtn.Position = UDim2.new(1, -28-26, 0, 5)
+refreshBtn.Size = UDim2.new(0, 20, 0, 20)
+refreshBtn.Text = "↻"
+refreshBtn.TextColor3 = Colors.Text
+refreshBtn.TextSize = 14
+refreshBtn.Font = Enum.Font.GothamBold
+corner(refreshBtn, 6)
+stroke(refreshBtn, Colors.Border, 1, 0.5)
+
+-- ===== CONTAINER CHÍNH (dùng UIListLayout) =====
+local mainContainer = Instance.new("Frame")
+mainContainer.Parent = main
+mainContainer.BackgroundTransparency = 1
+mainContainer.Position = UDim2.new(0, 12, 0, 38)
+mainContainer.Size = UDim2.new(1, -24, 1, -48)
+
+local containerLayout = Instance.new("UIListLayout")
+containerLayout.Parent = mainContainer
+containerLayout.FillDirection = Enum.FillDirection.Vertical
+containerLayout.SortOrder = Enum.SortOrder.LayoutOrder
+containerLayout.Padding = UDim.new(0, 6)
+containerLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+-- ===== HÀNG TRÊN: 2 PANEL (TRÁI + PHẢI) =====
+local topRow = Instance.new("Frame")
+topRow.Parent = mainContainer
+topRow.BackgroundTransparency = 1
+topRow.Size = UDim2.new(1, 0, 0, 220)  -- chiều cao cố định cho 2 panel
+topRow.LayoutOrder = 1
+
+local rowLayout = Instance.new("UIListLayout")
+rowLayout.Parent = topRow
+rowLayout.FillDirection = Enum.FillDirection.Horizontal
+rowLayout.SortOrder = Enum.SortOrder.LayoutOrder
+rowLayout.Padding = UDim.new(0, 6)
+rowLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+-- PANEL TRÁI: Account Stats
+local panel2 = Instance.new("Frame")
+panel2.Parent = topRow
+panel2.BackgroundColor3 = Colors.Surface
+panel2.BackgroundTransparency = 0.3
+panel2.BorderSizePixel = 0
+panel2.Size = UDim2.new(0.45, 0, 1, 0)
+panel2.LayoutOrder = 1
+corner(panel2, 8)
+stroke(panel2, Colors.Border, 1, 0.3)
+
+local p2Content = Instance.new("Frame")
+p2Content.Parent = panel2
+p2Content.BackgroundTransparency = 1
+p2Content.Position = UDim2.new(0, 10, 0, 8)
+p2Content.Size = UDim2.new(1, -20, 1, -16)
+
+local leftTitle = Instance.new("TextLabel")
+leftTitle.Parent = p2Content
+leftTitle.BackgroundTransparency = 1
+leftTitle.Position = UDim2.new(0, 0, 0, 0)
+leftTitle.Size = UDim2.new(1, 0, 0, 20)
+leftTitle.Font = Enum.Font.GothamSemibold
+leftTitle.Text = "Account Stats"
+leftTitle.TextColor3 = Colors.Primary
+leftTitle.TextSize = 14
+leftTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+local statsList = {
+    {name = "Level:", key = "level"},
+    {name = "Third Sea:", key = "thirdsea"},
+    {name = "Race:", key = "race"},
+    {name = "Beli:", key = "beli"},
+    {name = "Frag:", key = "frag"},
+}
+
+local statLabels = {}
+local function createStatRow(name, key, yPos)
+    local row = Instance.new("Frame")
+    row.BackgroundTransparency = 1
+    row.Position = UDim2.new(0, 0, 0, yPos)
+    row.Size = UDim2.new(1, 0, 0, 20)
+    row.Parent = p2Content
+
+    local lbl = Instance.new("TextLabel")
+    lbl.Parent = row
+    lbl.BackgroundTransparency = 1
+    lbl.Size = UDim2.new(0.5, 0, 1, 0)
+    lbl.Font = Enum.Font.Gotham
+    lbl.Text = name
+    lbl.TextColor3 = Colors.TextSec
+    lbl.TextSize = 11
+    lbl.TextXAlignment = Enum.TextXAlignment.Left
+    lbl.Name = "Label"
+
+    local val = Instance.new("TextLabel")
+    val.Parent = row
+    val.BackgroundTransparency = 1
+    val.Position = UDim2.new(0.5, 0, 0, 0)
+    val.Size = UDim2.new(0.5, 0, 1, 0)
+    val.Font = Enum.Font.GothamSemibold
+    val.Text = "..."
+    val.TextColor3 = Colors.Text
+    val.TextSize = 11
+    val.TextXAlignment = Enum.TextXAlignment.Right
+    val.Name = "Value"
+
+    statLabels[key] = val
+end
+
+for i, stat in ipairs(statsList) do
+    createStatRow(stat.name, stat.key, 24 + (i-1)*22)
+end
+
+-- PANEL PHẢI: Status Checks
+local panel3 = Instance.new("Frame")
+panel3.Parent = topRow
+panel3.BackgroundColor3 = Colors.Surface
+panel3.BackgroundTransparency = 0.3
+panel3.BorderSizePixel = 0
+panel3.Size = UDim2.new(0.53, 0, 1, 0)
+panel3.LayoutOrder = 2
+corner(panel3, 8)
+stroke(panel3, Colors.Border, 1, 0.3)
+
+local p3Content = Instance.new("Frame")
+p3Content.Parent = panel3
+p3Content.BackgroundTransparency = 1
+p3Content.Position = UDim2.new(0, 10, 0, 8)
+p3Content.Size = UDim2.new(1, -20, 1, -16)
+
+local rightTitle = Instance.new("TextLabel")
+rightTitle.Parent = p3Content
+rightTitle.BackgroundTransparency = 1
+rightTitle.Position = UDim2.new(0, 0, 0, 0)
+rightTitle.Size = UDim2.new(1, 0, 0, 20)
+rightTitle.Font = Enum.Font.GothamSemibold
+rightTitle.Text = "Status Checks"
+rightTitle.TextColor3 = Colors.Primary
+rightTitle.TextSize = 14
+rightTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+local scroll = Instance.new("ScrollingFrame")
+scroll.Parent = p3Content
+scroll.BackgroundTransparency = 1
+scroll.Position = UDim2.new(0, 0, 0, 24)
+scroll.Size = UDim2.new(1, 0, 1, -28)
+scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.ScrollBarThickness = 3
+scroll.ScrollBarImageColor3 = Colors.TextMuted
+
+local itemLayout = Instance.new("UIListLayout")
+itemLayout.Parent = scroll
+itemLayout.Padding = UDim.new(0, 3)
+
+local itemNames = {
+    "Godhuman",
+    "Cursed Dual Katana",
+    "Valkyrie Helm",
+    "Skull Guitar",
+    "Mirror Fractal",
+    "Pull Lever",
+}
+
+local itemRows = {}
+
+local function createItemRow(name)
+    local row = Instance.new("Frame")
+    row.BackgroundTransparency = 1
+    row.Size = UDim2.new(1, 0, 0, 20)
+    row.Parent = scroll
+
+    local icon = Instance.new("TextLabel")
+    icon.Parent = row
+    icon.BackgroundTransparency = 1
+    icon.Size = UDim2.new(0, 18, 1, 0)
+    icon.Font = Enum.Font.GothamBold
+    icon.Text = "❌"
+    icon.TextColor3 = Colors.Error
+    icon.TextSize = 12
+    icon.TextXAlignment = Enum.TextXAlignment.Center
+    icon.Name = "Icon"
+
+    local label = Instance.new("TextLabel")
+    label.Parent = row
+    label.BackgroundTransparency = 1
+    label.Position = UDim2.new(0, 22, 0, 0)
+    label.Size = UDim2.new(1, -22, 1, 0)
+    label.Font = Enum.Font.Gotham
+    label.Text = name
+    label.TextColor3 = Colors.TextSec
+    label.TextSize = 11
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Name = "Label"
+
+    itemRows[name] = {row = row, icon = icon, label = label}
+end
+
+for _, name in ipairs(itemNames) do
+    createItemRow(name)
+end
+
+local function updateCanvas()
+    local count = #scroll:GetChildren()
+    scroll.CanvasSize = UDim2.new(0, 0, 0, count * 23 + 10)
+end
+
+-- ===== HÀNG DƯỚI: FARM STATUS + SYSTEM INFO =====
+local panel1 = Instance.new("Frame")
+panel1.Parent = mainContainer
+panel1.BackgroundColor3 = Colors.Surface
+panel1.BackgroundTransparency = 0.3
+panel1.BorderSizePixel = 0
+panel1.Size = UDim2.new(1, 0, 0, 60)  -- chiều cao cố định
+panel1.LayoutOrder = 2
+corner(panel1, 8)
+stroke(panel1, Colors.Border, 1, 0.3)
+
+local p1Content = Instance.new("Frame")
+p1Content.Parent = panel1
+p1Content.BackgroundTransparency = 1
+p1Content.Position = UDim2.new(0, 10, 0, 6)
+p1Content.Size = UDim2.new(1, -20, 1, -12)
+
+-- Farm Status
+local farmLabel = Instance.new("TextLabel")
+farmLabel.Parent = p1Content
+farmLabel.BackgroundTransparency = 1
+farmLabel.Position = UDim2.new(0, 0, 0, 0)
+farmLabel.Size = UDim2.new(0.6, 0, 0, 20)
+farmLabel.Font = Enum.Font.Gotham
+farmLabel.Text = "Farm: Idle"
+farmLabel.TextColor3 = Colors.TextSec
+farmLabel.TextSize = 12
+farmLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+-- System Info (FPS, Ping, Uptime)
+local sysLabel = Instance.new("TextLabel")
+sysLabel.Parent = p1Content
+sysLabel.BackgroundTransparency = 1
+sysLabel.Position = UDim2.new(0.6, 0, 0, 0)
+sysLabel.Size = UDim2.new(0.4, 0, 0, 20)
+sysLabel.Font = Enum.Font.Gotham
+sysLabel.Text = "FPS:0  Ping:0ms  Uptime:0s"
+sysLabel.TextColor3 = Colors.TextSec
+sysLabel.TextSize = 12
+sysLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+-- ===== UPDATE UI =====
+local startTime = os.time()
+local frameCount = 0
+local lastFpsUpdate = 0
+local currentFps = 0
+local ping = 0
+
+local function getPing()
+    local p = 0
+    pcall(function()
+        local stats = game:GetService("Stats")
+        local ps = stats:FindFirstChild("PerformanceStats")
+        if ps then
+            local pingVal = ps:FindFirstChild("Ping")
+            if pingVal then p = math.floor(pingVal:GetValue()) end
+        end
+        if p == 0 then
+            local network = stats:FindFirstChild("Network")
+            if network then
+                local serverItem = network:FindFirstChild("ServerStatsItem")
+                if serverItem then
+                    local dp = serverItem:FindFirstChild("Data Ping")
+                    if dp then p = math.floor(dp:GetValue()) end
+                end
+            end
+        end
+    end)
+    return p
+end
+
+local function updateUI()
+    pcall(function()
+        -- Farm Status
+        local farmText = "Farm: Idle"
+        if getgenv().CurrentFarm then
+            farmText = "Farm: " .. getgenv().CurrentFarm
+        elseif getgenv().FarmStatus then
+            farmText = "Farm: " .. getgenv().FarmStatus
+        end
+        farmLabel.Text = farmText
+
+        -- System Info
+        ping = getPing()
+        local uptime = os.time() - startTime
+        local h = math.floor(uptime / 3600)
+        local m = math.floor((uptime % 3600) / 60)
+        local s = uptime % 60
+        local uptimeStr = (h > 0 and string.format("%dh %02dm", h, m) or string.format("%dm %02ds", m, s))
+        sysLabel.Text = string.format("FPS: %d  Ping: %dms  Uptime: %s", currentFps, ping, uptimeStr)
+
+        -- Account Stats
+        local data = getPlayerData()
+        statLabels.level.Text = tostring(data.level)
+        statLabels.thirdsea.Text = data.thirdSea and "✅" or "❌"
+        statLabels.race.Text = data.race
+        statLabels.beli.Text = tostring(data.beli)
+        statLabels.frag.Text = tostring(data.frag)
+
+        -- Status Checks
+        local inv = GetInvMap()
+        local function checkItem(name, remoteCheck)
+            if name == "Pull Lever" then
+                local ok = false
+                pcall(function()
+                    ok = ReplicatedStorage.Remotes.CommF_:InvokeServer("CheckTempleDoor") == true
+                end)
+                return ok
+            end
+            local has = inv[name] or (lp.Backpack and lp.Backpack:FindFirstChild(name) ~= nil) or (lp.Character and lp.Character:FindFirstChild(name) ~= nil)
+            if remoteCheck and not has then
+                pcall(function()
+                    has = ReplicatedStorage.Remotes.CommF_:InvokeServer("BuyGodhuman", true) == 1 or has
+                end)
+            end
+            return has
+        end
+
+        for _, name in ipairs(itemNames) do
+            local row = itemRows[name]
+            if row then
+                local has = (name == "Godhuman") and checkItem(name, true) or checkItem(name, false)
+                row.icon.Text = has and "✅" or "❌"
+                row.icon.TextColor3 = has and Colors.Success or Colors.Error
+            end
+        end
+
+        updateCanvas()
+    end)
+end
+
+-- FPS counter
+RunService.Heartbeat:Connect(function()
+    frameCount = frameCount + 1
+    local now = tick()
+    if now - lastFpsUpdate >= 1 then
+        currentFps = frameCount
+        frameCount = 0
+        lastFpsUpdate = now
+    end
+end)
+
+-- Refresh
+refreshBtn.MouseButton1Click:Connect(function()
+    updateUI()
+    TweenService:Create(refreshBtn, TweenInfo.new(.2), {Rotation = 360}):Play()
+    task.wait(.2)
+    refreshBtn.Rotation = 0
+end)
+
+-- Auto update
+updateUI()
+task.spawn(function()
+    while gui and gui.Parent do
+        task.wait(2)
+        updateUI()
+    end
+end)
+
+-- ===== DRAG =====
+local dragging = false
+local dragStart, startPos
+main.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = main.Position
+    end
+end)
+main.InputEnded:Connect(function() dragging = false end)
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+print("[Red Magic Checker] Loaded with 3 panels (no overlap).")
