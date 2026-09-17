@@ -1,0 +1,3801 @@
+local t1 = {}
+local t2 = {}
+local v3 = unpack or table.unpack
+t2.value1 = game:GetService("ReplicatedStorage")
+t2.value2 = game:GetService("Players")
+t2.value3 = game:GetService("RunService")
+t2.value4 = game:GetService("TweenService")
+
+local UserInputService = game:GetService("UserInputService")
+
+t2.value5 = game:GetService("Workspace")
+t2.value6 = t2.value2.LocalPlayer
+local Character = t2.value6.Character
+if not Character then
+    Character = t2.value6.CharacterAdded:Wait()
+end
+local value1 = t1.value1
+t1.value3 = "\213`\020\180_\140\188Nr\217\016\176\133TX\153"
+t1.value1 = value1
+t2.value7 = Character
+local value7 = t2.value7
+local WaitForChild = value7.WaitForChild
+t1.value2 = "WaitForChild"
+t2.value8 = WaitForChild(value7, "HumanoidRootPart")
+t2.value9 = 150
+local value1_2 = t2.value1
+t1.value2 = value1_2.WaitForChild
+t1.value4 = 4828406859976
+t1.value9 = 4566595373134
+t1.value2 = t1.value2(value1_2, "Modules")
+
+local Net = t1.value2:WaitForChild("Net")
+local WaitForChild2 = Net.WaitForChild
+t1.value4 = 28294454145911
+t1.value2 = WaitForChild2
+t1.value2 = t1.value2(Net, "RE/RegisterAttack")
+t2.value10 = t1.value2
+t1.value2 = Net:WaitForChild("RE/RegisterHit")
+t2.value11 = t1.value2
+local str = tostring(t2.value6.UserId)
+
+t1.value3 = "sub"
+t1.value4 = 4
+t1.value3 = str:sub(2, t1.value4)
+
+local str2 = tostring(math.random(100000, 999999))
+
+t1.value9 = 7679232167415
+t1.value4 = 1
+t1.value6 = "=]\170\t/~\237"
+t1.value11 = "\240Ls\139\153\217"
+local sub = str2.sub
+t1.value8 = "\188\020%\192\004\031\214"
+t1.value10 = 3828369377014
+t1.value5 = 5
+local v15 = sub(str2, t1.value4, t1.value5)
+
+t2.value12 = t1.value3 .. v15
+t1.value2 = t2.value5
+local WaitForChild3 = t1.value2.WaitForChild
+t1.value10 = "\213|\t\003"
+t1.value7 = 35146531930094
+t2.value13 = WaitForChild3(t1.value2, "Enemies")
+t2.value14 = t2.value1:WaitForChild("NPCs")
+t2.value15 = t2.value1.Remotes.CommF_
+t1.value5 = require(t2.value1:WaitForChild("Quests"))
+t2.value16 = t1.value5
+t1.value5 = loadstring(game:HttpGet("https://sirius.menu/gen2"))()
+t2.value17 = nil
+function t1.value10()
+    if t2.value17 then
+        return t2.value17
+    end
+
+    local t3 = {}
+
+    for k, v in pairs(t2.value16) do
+        if type(v) == "table" then
+            for i, v2 in ipairs(v) do
+                if v2.LevelReq then
+                    local v72 = #t3 + 1
+                    local LevelReq = v2.LevelReq
+                    local Task = v2.Task
+                    local v2Name = v2.Name
+
+                    t3[v72] = {
+						Group = k,
+						Index = i,
+						LevelReq = LevelReq,
+						Task = Task,
+						DisplayName = v2Name
+					}
+                end
+            end
+        end
+    end
+
+    table.sort(t3, function(p1, p2)
+        return p1.LevelReq < p2.LevelReq
+    end)
+    t2.value17 = t3
+
+    return t3
+end
+t2.value17 = nil
+t2.value18 = t1.value10
+function CheckQuest()
+    local LevelValue = t2.value6.Data.Level.Value
+    local v77 = t2.value18()
+
+    if #v77 == 0 then
+        return
+    end
+
+    local v78 = v77[1]
+
+    if SelectMonster then
+        for _, v in ipairs(v77) do
+            for k in pairs(v.Task) do
+                if k == SelectMonster then
+                    v78 = v
+
+                    break
+                end
+            end
+        end
+    else
+        for i = #v77, 1, -1 do
+            local v83 = i
+
+            if LevelValue >= v77[v83].LevelReq then
+                v78 = v77[v83]
+
+                break
+            end
+        end
+    end
+
+    NameMon = next(v78.Task)
+    LevelQuest = v78.Index
+    NameQuest = v78.Group
+    QuestDisplayName = v78.DisplayName or NameMon
+end
+local function v17(p3)
+    local _WorldOrigin = t2.value5:FindFirstChild("_WorldOrigin")
+
+    if not _WorldOrigin then
+        return nil
+    end
+
+    local EnemySpawns = _WorldOrigin:FindFirstChild("EnemySpawns")
+
+    if not EnemySpawns then
+        return nil
+    end
+
+    local v87 = p3 .. " ["
+    local v88 = #v87
+
+    for _, child in ipairs(EnemySpawns:GetChildren()) do
+        local v91 = child:IsA("BasePart")
+
+        if v91 then
+            v91 = v87 == string.sub(child.Name, 1, v88)
+        end
+
+        if v91 then
+            return child
+        end
+    end
+
+    return nil
+end
+t2.value19 = nil
+t2.value20 = 0
+function stopTween()
+    t2.value20 = t2.value20 + 1
+
+    if t2.value19 then
+        pcall(function()
+            t2.value19:Cancel()
+        end)
+        t2.value19 = nil
+    end
+
+    local Character2 = t2.value6.Character
+
+    if Character2 and Character2:FindFirstChild("PartTele") then
+        Character2.PartTele:Destroy()
+    end
+end
+function t1.value8(p4)
+    local Character3 = t2.value6.Character
+    local v97 = Character3
+
+    if v97 then
+        v97 = Character3:FindFirstChild("HumanoidRootPart")
+    end
+
+    if not v97 then
+        return
+    end
+
+    local HumanoidRootPart = Character3.HumanoidRootPart
+
+    if not Character3:FindFirstChild("PartTele") then
+        local Part = Instance.new("Part")
+
+        Part.Size = Vector3.new(10, 1, 10)
+        Part.Name = "PartTele"
+        Part.Anchored = true
+        Part.Transparency = 1
+        Part.CanCollide = false
+        Part.CFrame = HumanoidRootPart.CFrame
+        Part.Parent = Character3
+        Part:GetPropertyChangedSignal("CFrame"):Connect(function()
+            task.wait(0.01)
+
+            local v363 = Character3
+
+            if v363 then
+                v363 = Character3:FindFirstChild("HumanoidRootPart")
+
+                if v363 then
+                    v363 = Character3:FindFirstChild("PartTele")
+                end
+            end
+
+            if v363 then
+                Character3.HumanoidRootPart.CFrame = Character3.PartTele.CFrame
+            end
+        end)
+    end
+
+    if t2.value19 then
+        pcall(function()
+            t2.value19:Cancel()
+        end)
+        t2.value19 = nil
+    end
+
+    t2.value20 = t2.value20 + 1
+
+    local value20 = t2.value20
+    local Magnitude = (p4.Position - Character3.PartTele.Position).Magnitude
+
+    t2.value19 = t2.value4:Create(Character3.PartTele, TweenInfo.new(Magnitude / t2.value9, Enum.EasingStyle.Linear), {
+		CFrame = p4
+	})
+    t2.value19:Play()
+    t2.value19.Completed:Connect(function(p5)
+        if not (p5 == Enum.PlaybackState.Completed and value20 == t2.value20) then
+        end
+    end)
+end
+topos = t1.value8
+local function v18(p6)
+    local Character4 = t2.value6.Character
+    local v104 = Character4
+
+    if v104 then
+        v104 = Character4:FindFirstChild("HumanoidRootPart")
+    end
+
+    if not v104 then
+        return
+    end
+
+    local HumanoidRootPart = Character4.HumanoidRootPart
+
+    if not Character4:FindFirstChild("PartTele") then
+        local Part = Instance.new("Part")
+
+        Part.Size = Vector3.new(10, 1, 10)
+        Part.Name = "PartTele"
+        Part.Anchored = true
+        Part.Transparency = 1
+        Part.CanCollide = false
+        Part.CFrame = HumanoidRootPart.CFrame
+        Part.Parent = Character4
+        Part:GetPropertyChangedSignal("CFrame"):Connect(function()
+            task.wait(0.01)
+
+            local v365 = Character4
+
+            if v365 then
+                v365 = Character4:FindFirstChild("HumanoidRootPart")
+
+                if v365 then
+                    v365 = Character4:FindFirstChild("PartTele")
+                end
+            end
+
+            if v365 then
+                Character4.HumanoidRootPart.CFrame = Character4.PartTele.CFrame
+            end
+        end)
+    end
+
+    local Magnitude = (p6 - Character4.PartTele.Position).Magnitude
+
+    t2.value4:Create(Character4.PartTele, TweenInfo.new(Magnitude / t2.value9, Enum.EasingStyle.Linear), {
+		CFrame = CFrame.new(p6)
+	}):Play()
+end
+if game.PlaceId == 2753915549 then
+    World1 = true
+else
+    t1.value15 = game
+
+    if t1.value15.PlaceId == 4442272183 then
+        World2 = true
+    else
+        t1.value12 = game
+
+        if t1.value12.PlaceId == 7449423635 then
+            World3 = true
+        end
+    end
+end
+function t1.value15()
+    local Character5 = t2.value6.Character
+
+    if Character5 and not Character5:FindFirstChild("HasBuso") then
+        t2.value15:InvokeServer("Buso")
+    end
+end
+t1.value17 = 20171855946929
+t1.value12 = "AutoHaki"
+t1.value16 = "\232\t\138\136\233"
+AutoHaki = t1.value15
+function EquipWeapon(p7)
+    if t2.value6.Backpack:FindFirstChild(p7) then
+        t2.value6.Character.Humanoid:EquipTool(t2.value6.Backpack:FindFirstChild(p7))
+    end
+end
+function requestEntrance(p8)
+    t2.value15:InvokeServer("requestEntrance", p8)
+
+    local HumanoidRootPart = t2.value6.Character.HumanoidRootPart
+
+    HumanoidRootPart.CFrame = HumanoidRootPart.CFrame + Vector3.new(0, 50, 0)
+    task.wait(0.5)
+end
+t2.value21 = {}
+function t1.value15()
+    local Character6 = t2.value6.Character
+    if not Character6 then
+        return
+    end
+    local HumanoidRootPart = Character6:FindFirstChild("HumanoidRootPart")
+    if not HumanoidRootPart then
+        return
+    end
+    local HumanoidRootPartPosition = HumanoidRootPart.Position
+    local children = t2.value13:GetChildren()
+    local v116 = #children
+    if v116 == 0 then
+        return
+    end
+    local n1 = 0
+    local v118
+    for i = 1, v116 do
+        local v120 = children[i]
+        local Humanoid = v120:FindFirstChild("Humanoid")
+
+        if Humanoid and Humanoid.Health > 0 then
+            local HumanoidRootPart2 = v120:FindFirstChild("HumanoidRootPart")
+
+            if HumanoidRootPart2 then
+                n1 += 1
+
+                local v123 = t2.value21[n1]
+
+                if v123 then
+                    v123[1] = v120
+                    v123[2] = HumanoidRootPart2
+                else
+                    t2.value21[n1] = {
+						v120,
+						HumanoidRootPart2
+					}
+                end
+
+                local v124 = not v118
+
+                if v124 then
+                    v124 = (HumanoidRootPart2.Position - HumanoidRootPartPosition).Magnitude <= 60
+                end
+
+                if v124 then
+                    v118 = v120:FindFirstChild("RightHand") or HumanoidRootPart2
+                end
+            end
+        end
+    end
+    if n1 == 0 then
+        return
+    end
+    for i = n1 + 1, #t2.value21 do
+        t2.value21[i] = nil
+    end
+    t2.value10:FireServer(0.5, 1)
+    local value11 = t2.value11
+    if not v118 then
+        v118 = t2.value21[1][2]
+    end
+    value11:FireServer(v118, t2.value21, nil, t2.value12)
+end
+t1.value18 = 30629398525878
+t1.value13 = "Attack"
+Attack = t1.value15
+t2.value22 = "Melee"
+function equipSingleWeapon(p9, p10)
+    for _, child in ipairs(p9:GetChildren()) do
+        local v131 = child:IsA("Tool")
+
+        if v131 then
+            v131 = p10 == child:GetAttribute("WeaponType")
+        end
+
+        if v131 then
+            return
+        end
+    end
+
+    local Backpack = t2.value6.Backpack
+    local GetChildren = Backpack.GetChildren
+
+    for _, v in ipairs(GetChildren(Backpack)) do
+        local v136 = v:IsA("Tool")
+
+        if v136 then
+            v136 = p10 == v:GetAttribute("WeaponType")
+        end
+
+        if v136 then
+            for _, child in ipairs(p9:GetChildren()) do
+                if child:IsA("Tool") then
+                    child.Parent = Backpack
+                end
+            end
+
+            v.Parent = p9
+
+            return
+        end
+    end
+end
+t1.value14 = "autoEquiTool"
+t1.value19 = 6621735488523
+function autoEquiTool(p11)
+    equipSingleWeapon(t2.value6.Character, p11)
+end
+t1.value20 = 4863833196760
+t1.value17 = "task"
+t1.value15 = false
+t2.value23 = t1.value15
+t2.value24 = false
+t1.value15 = task.spawn
+function t1.value17()
+    while task.wait() do
+        if t2.value24 then
+            pcall(function()
+                local Character7 = t2.value6.Character
+
+                if not Character7 then
+                    Character7 = t2.value6.CharacterAdded:Wait()
+                end
+
+                local HumanoidRootPart = Character7:WaitForChild("HumanoidRootPart")
+
+                if t2.value6.Data.Level.Value >= 700 and World1 then
+
+                    t2.value23 = false
+                    local Door = t2.value5.Map.Ice.Door
+                    if Door.CanCollide and Door.Transparency == 0 then
+                        local cFrame = CFrame.new(4851.8720703125, 5.6514348983765, 718.47094726563)
+
+                        repeat
+                            task.wait()
+                            topos(cFrame)
+                        until (HumanoidRootPart.Position - cFrame.Position).Magnitude <= 3 or not t2.value24
+
+                        task.wait(1)
+                        t2.value15:InvokeServer("DressrosaQuestProgress", "Detective")
+                        EquipWeapon("Key")
+
+                        local cFrame2 = CFrame.new(1347.7124, 37.3751602, -1325.6488)
+
+                        repeat
+                            wait()
+                            topos(cFrame2)
+                        until (cFrame2.Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude <= 3 or not t2.value24
+
+                        task.wait(3)
+
+                        return
+                    end
+                    if not Door.CanCollide and Door.Transparency == 1 then
+                        topos(CFrame.new(1347.7124, 37.3751602, -1325.6488))
+
+                        if t2.value13:FindFirstChild("Ice Admiral") then
+                            for _, child in pairs(t2.value13:GetChildren()) do
+                                local v374 = child.Name == "Ice Admiral"
+
+                                if v374 then
+                                    v374 = child:FindFirstChild("Humanoid")
+
+                                    if v374 then
+                                        v374 = child.Humanoid.Health > 0
+                                    end
+                                end
+
+                                if v374 then
+                                    repeat
+                                        task.wait()
+                                        AutoHaki()
+                                        autoEquiTool(t2.value22)
+                                        topos(child.HumanoidRootPart.CFrame * CFrame.new(0, 40, 0))
+                                        child.HumanoidRootPart.CanCollide = false
+                                        child.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
+                                        child.HumanoidRootPart.Transparency = 1
+
+                                        local v375 = child.Humanoid.Health <= 0
+
+                                        if not v375 then
+                                            v375 = not child.Parent or not t2.value24
+                                        end
+                                    until v375
+
+                                    t2.value15:InvokeServer("TravelDressrosa")
+                                end
+                            end
+
+                            return
+                        end
+
+                        topos(CFrame.new(1347.7124, 37.3751602, -1325.6488))
+
+                        return
+                    end
+                    t2.value15:InvokeServer("TravelDressrosa")
+                end
+            end)
+        end
+    end
+end
+t1.value15(t1.value17)
+t1.value15 = _G
+t1.value17 = false
+t1.value23 = 10617345250128
+t1.value15.ThirdSea = t1.value17
+t1.value24 = 28467510391752
+t1.value16 = "spawn"
+function t1.value17()
+    while wait() do
+        if _G.ThirdSea then
+            pcall(function()
+                if t2.value6.Data.Level.Value >= 1500 and World2 then
+                    t2.value23 = false
+
+                    if t2.value15:InvokeServer("ZQuestProgress", "General") == 0 then
+                        topos(CFrame.new(-1926.3221435547, 12.819851875305, 1738.3092041016))
+
+                        if (CFrame.new(-1926.3221435547, 12.819851875305, 1738.3092041016).Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+                            wait(1.5)
+                            t2.value15:InvokeServer("ZQuestProgress", "Begin")
+                        end
+
+                        wait(1.8)
+
+                        if t2.value13:FindFirstChild("rip_indra") then
+                            for _, child in pairs(t2.value13:GetChildren()) do
+                                if child.Name == "rip_indra" then
+                                    local HumanoidRootPartCFrame = child.HumanoidRootPart.CFrame
+
+                                    repeat
+                                        task.wait()
+                                        AutoHaki()
+                                        autoEquiTool(t2.value22)
+                                        topos(child.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                                        child.HumanoidRootPart.CFrame = HumanoidRootPartCFrame
+                                        child.HumanoidRootPart.Size = Vector3.new(50, 50, 50)
+                                        child.HumanoidRootPart.CanCollide = false
+                                        child.Humanoid.WalkSpeed = 0
+                                        t2.value15:InvokeServer("TravelZou")
+                                        pcall(function()
+                                            sethiddenproperty(t2.value6, "SimulationRadius", 1e999)
+                                        end)
+
+                                        local v379 = not _G.ThirdSea
+
+                                        if not v379 then
+                                            v379 = child.Humanoid.Health <= 0 or not child.Parent
+                                        end
+                                    until v379
+                                end
+                            end
+
+                            return
+                        end
+
+                        local v380 = not t2.value13:FindFirstChild("rip_indra")
+
+                        if v380 then
+                            v380 = (CFrame.new(-26880.93359375, 22.848554611206, 473.18951416016).Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude <= 1000
+                        end
+
+                        if v380 then
+                            topos(CFrame.new(-26880.93359375, 22.848554611206, 473.18951416016))
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end
+t1.value15 = spawn
+t1.value15(t1.value17)
+
+function t1.value16(p12)
+    local n2 = 1e999
+    local v142
+    local HumanoidRootPart = t2.value6.Character:FindFirstChild("HumanoidRootPart")
+    if not HumanoidRootPart then
+        return nil
+    end
+    for _, child in pairs(t2.value13:GetChildren()) do
+        if not p12 or p12 == child.Name then
+            local HumanoidRootPart3 = child:FindFirstChild("HumanoidRootPart")
+            local Humanoid = child:FindFirstChild("Humanoid")
+            local v148 = HumanoidRootPart3
+
+            if HumanoidRootPart3 then
+                if Humanoid then
+                    Humanoid = Humanoid.Health > 0
+                end
+
+                v148 = Humanoid
+            end
+
+            if v148 then
+                local Magnitude = (HumanoidRootPart3.Position - HumanoidRootPart.Position).Magnitude
+
+                if Magnitude < n2 then
+                    n2 = Magnitude
+                    v142 = child
+                end
+            end
+        end
+    end
+
+    return v142
+end
+t2.value25 = t1.value16
+task.spawn(function()
+    while task.wait(1) do
+        pcall(function()
+            sethiddenproperty(t2.value6, "SimulationRadius", 1e999)
+        end)
+    end
+end)
+
+local function v19()
+    local TrackedQuestFrame = t2.value6.PlayerGui:FindFirstChild("TrackedQuestFrame")
+
+    if not TrackedQuestFrame then
+        return nil, false
+    end
+
+    local Frame = TrackedQuestFrame:FindFirstChild("Frame")
+
+    if not Frame then
+        return nil, false
+    end
+
+    local FrameVisible = Frame.Visible
+    local description = Frame:FindFirstChild("description")
+
+    if not description then
+        return nil, FrameVisible
+    end
+
+    return description.Text, FrameVisible
+end
+t1.value17 = 0
+t1.value25 = ""
+t2.value26 = t1.value17
+function t1.value17()
+    task.spawn(function()
+        while t2.value23 do
+            CheckQuest()
+
+            local v381, v382 = v19()
+
+            if v382 then
+                v382 = v381 ~= nil
+
+                if v382 then
+                    v382 = v381 ~= ""
+                end
+            end
+
+            local v383 = false
+            local v384 = v383
+
+            if v382 then
+                local v385 = string.lower(v381)
+
+                v383 = string.find(v385, string.lower(NameMon), 1, true) ~= nil
+                v384 = v383
+
+                local v386 = not v384
+
+                if v386 then
+                    v386 = QuestDisplayName
+
+                    if v386 then
+                        v386 = QuestDisplayName ~= ""
+                    end
+                end
+
+                if v386 then
+                    v384 = string.find(v385, string.lower(QuestDisplayName), 1, true) ~= nil
+                end
+            end
+
+            local timestamp = tick()
+            local v388 = not v384
+
+            if v388 then
+                v388 = timestamp - t2.value26 > 2
+            end
+
+            if v388 then
+                if v382 then
+                    t2.value15:InvokeServer("AbandonQuest")
+                    task.wait(0.7)
+                end
+
+                t2.value15:InvokeServer("StartQuest", NameQuest, LevelQuest)
+                t2.value26 = tick()
+                task.wait(0.7)
+            end
+
+            local v389 = t2.value25(NameMon)
+
+            if v389 then
+                repeat
+                    task.wait()
+
+                    if not t2.value23 then
+                        break
+                    end
+
+                    AutoHaki()
+                    autoEquiTool(t2.value22)
+
+                    local HumanoidRootPart = v389:FindFirstChild("HumanoidRootPart")
+
+                    if HumanoidRootPart then
+                        topos(HumanoidRootPart.CFrame * CFrame.new(8, 0, 0))
+                        HumanoidRootPart.CanCollide = false
+                        v389.Humanoid.WalkSpeed = 0
+                        pcall(function()
+                            sethiddenproperty(t2.value6, "SimulationRadius", 1e999)
+                        end)
+                        Attack()
+                    end
+
+                    local v391 = not t2.value23
+
+                    if not v391 then
+                        v391 = not v389.Parent
+
+                        if not v391 then
+                            v391 = v389.Humanoid.Health <= 0
+                        end
+                    end
+                until v391
+            else
+                local v393 = v17(NameMon)
+                local v394 = if not v393 then nil else v393.CFrame
+                if v394 then
+                    topos(v394)
+                end
+            end
+
+            task.wait()
+        end
+
+        stopTween()
+    end)
+end
+t1.value22 = "startAutoFarm"
+t1.value21 = "toggleFarm"
+startAutoFarm = t1.value17
+t2.value27 = nil
+function toggleFarm(p13)
+    t2.value23 = p13
+
+    if p13 then
+        startAutoFarm()
+
+        return
+    end
+
+    stopTween()
+end
+t2.value28 = nil
+function t1.value19()
+    local leaderstats = t2.value6:FindFirstChild("leaderstats")
+    local Data = t2.value6:FindFirstChild("Data")
+    local s1 = "N/A"
+    local s2 = "N/A"
+    local s3 = "N/A"
+
+    if leaderstats then
+        local v168 = leaderstats:FindFirstChild("Bounty/Honor")
+
+        if not v168 then
+            v168 = leaderstats:FindFirstChild("Honor")
+        end
+
+        if v168 then
+            s2 = tostring(v168.Value):reverse():gsub("%d%d%d", "%1,"):reverse():gsub("^,", "")
+        end
+    end
+
+    if Data then
+        local Beli = Data:FindFirstChild("Beli")
+
+        if Beli then
+            s3 = tostring(Beli.Value):reverse():gsub("%d%d%d", "%1,"):reverse():gsub("^,", "")
+        end
+
+        local Exp = Data:FindFirstChild("Exp")
+
+        if Exp then
+            s1 = tostring(Exp.Value):reverse():gsub("%d%d%d", "%1,"):reverse():gsub("^,", "")
+        end
+
+        local DevilFruit = Data:FindFirstChild("DevilFruit")
+
+        if DevilFruit then
+            t2.value28 = tostring(DevilFruit.Value):reverse():gsub("%d%d%d", "%1,"):reverse():gsub("^,", "")
+        end
+    end
+
+    return "Bounty: " .. s2 .. "\nGold: " .. s3 .. "\nEXP: " .. s1 .. "\n\nSkills Equip : \nFruit: " .. t2.value28
+end
+t2.value28 = "N/A"
+t2.value29 = t1.value19
+function t2.value30()
+    local Data = t2.value6:FindFirstChild("Data")
+
+    if not Data then
+        return "Data folder tidak ditemukan!"
+    end
+
+    local Stats = Data:FindFirstChild("Stats")
+
+    if not Stats then
+        return "Stats folder tidak ditemukan!"
+    end
+
+    local t4 = {}
+
+    for _, v in ipairs({
+		"Melee",
+		"Defense",
+		"Sword",
+		"Gun",
+		"Demon Fruit"
+	}) do
+        local v4 = Stats:FindFirstChild(v)
+
+        if v4 and v4:FindFirstChild("Level") then
+            t4[#t4 + 1] = string.format("%s Level: %s", v, tostring(v4.Level.Value))
+        else
+            t4[#t4 + 1] = string.format("%s Level: ❌", v)
+        end
+    end
+
+    return table.concat(t4, "\n")
+end
+t2.value31 = false
+t2.value32 = "Melee"
+t2.value33 = 1
+t2.value34 = ""
+t2.value35 = "Katana"
+t2.value36 = "Black Leg"
+t2.value37 = "Slingshot"
+t2.value38 = "Black Cape"
+t2.value39 = nil
+t2.value40 = nil
+t2.value41 = nil
+t2.value42 = false
+t2.value43 = true
+t2.value44 = false
+t2.value45 = false
+t2.value46 = false
+t2.value47 = false
+t2.value48 = false
+t2.value49 = false
+t2.value50 = false
+t2.value51 = false
+t2.value52 = false
+t2.value53 = false
+t2.value54 = false
+t2.value55 = false
+t2.value56 = false
+t2.value57 = false
+t2.value58 = false
+t2.value59 = false
+t2.value60 = false
+t2.value61 = false
+if World1 then
+    t2.value41 = "The Gorilla King"
+elseif World2 then
+    t2.value41 = "Diamond"
+elseif World3 then
+    t2.value41 = "Stone"
+end
+t2.value62 = t1.value5:CreateWindow({
+	name = "Clover Hub",
+	subtitle = "Blox Fruit Script",
+	sidebarLayout = true,
+	theme = "Green",
+	configuration = {
+		autoSave = true,
+		autoLoad = true,
+		fileName = "CloverHubConfig"
+	}
+})
+local t5 = {
+	Main = t2.value62:CreateTab({
+		name = "Main",
+		icon = "gamepad-2"
+	}),
+	Boat = t2.value62:CreateTab({
+		name = "Boat",
+		icon = "gamepad-2"
+	}),
+	Teleports = t2.value62:CreateTab({
+		name = "Teleports",
+		icon = "rocket"
+	}),
+	Raid = t2.value62:CreateTab({
+		name = "Raid",
+		icon = "rbxassetid://10734975692"
+	}),
+	SeaEvent = t2.value62:CreateTab({
+		name = "Sea Event",
+		icon = "rbxassetid://10734941354"
+	}),
+	Autos = t2.value62:CreateTab({
+		name = "Autos",
+		icon = "repeat-2"
+	}),
+	Misc = t2.value62:CreateTab({
+		name = "Misc",
+		icon = "settings-2"
+	}),
+	Shop = t2.value62:CreateTab({
+		name = "Shop",
+		icon = "shopping-cart"
+	})
+}
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then
+        return
+    end
+
+    if input.KeyCode == Enum.KeyCode.RightControl then
+        t2.value62:Toggle()
+    end
+end)
+
+local Main = t5.Main
+local CreateText = Main.CreateText
+local v23 = t2.value29()
+t2.value63 = CreateText(Main, {
+	name = "Player Statistic",
+	text = v23
+})
+task.spawn(function()
+    while true do
+        pcall(function()
+            local value63 = t2.value63
+            local t6 = { t2.value29() }
+
+            value63:Set(v3(t6))
+        end)
+        task.wait(0.5)
+    end
+end)
+t5.Main:CreateSection({
+	name = "Farm"
+})
+t5.Main:CreateDropdown({
+	name = "Select Equip Tool",
+	options = {
+		"None",
+		"Melee",
+		"Sword",
+		"Blox Fruit"
+	},
+	value = "Melee",
+	callback = function(p14)
+    if p14 ~= "None" then
+        t2.value22 = p14
+        autoEquiTool(t2.value22)
+    end
+end
+})
+t5.Main:CreateToggle({
+	name = "Auto Farm",
+	description = "Turn on To Auto Farm with Fast attack",
+	value = false,
+	callback = function(p15)
+    toggleFarm(p15)
+end
+})
+t5.Main:CreateToggle({
+	name = "Auto Catch Fishing",
+	description = "Auto complete fishing (Catch only)",
+	value = false,
+	callback = function(p16)
+    getgenv().AutoCatch = p16
+
+    if p16 then
+        task.spawn(function()
+            while getgenv().AutoCatch do
+                pcall(function()
+                    t2.value1:WaitForChild("FishReplicated"):WaitForChild("FishingRequest"):InvokeServer("Catch", 1, 0, math.random())
+                end)
+                task.wait(0.5)
+            end
+        end)
+    end
+end
+})
+t5.Main:CreateSection({
+	name = "Boss"
+})
+if World1 then
+    t5.Main:CreateDropdown({
+		name = "Auto Select Boss",
+		options = {
+			"The Saw",
+			"The Gorilla King",
+			"Bobby",
+			"Yeti",
+			"Mob Leader",
+			"Vice Admiral",
+			"Warden",
+			"Chief Warden",
+			"Swan",
+			"Magma Admiral",
+			"Fishman Lord",
+			"Wysper",
+			"Thunder God",
+			"Cyborg",
+			"Saber Expert"
+		},
+		value = "The Gorilla King",
+		callback = function(p17)
+        t2.value41 = p17
+    end
+	})
+elseif World2 then
+    t5.Main:CreateDropdown({
+		name = "Auto Select Boss",
+		options = {
+			"Diamond",
+			"Jeremy",
+			"Fajita",
+			"Don Swan",
+			"Smoke Admiral",
+			"Cursed Captain",
+			"Darkbeard",
+			"Order",
+			"Awakened Ice Admiral",
+			"Tide Keeper"
+		},
+		value = "Diamond",
+		callback = function(p18)
+        t2.value41 = p18
+    end
+	})
+elseif World3 then
+    t5.Main:CreateDropdown({
+		name = "Auto Select Boss",
+		options = {
+			"Stone",
+			"Island Empress",
+			"Rocket Admiral",
+			"Captain Elephant",
+			"Beautiful Pirate",
+			"rip_indra True Form",
+			"Longma",
+			"Soul Reaper",
+			"Cake Queen",
+			"Cake Prince",
+			"Dough King"
+		},
+		value = "Stone",
+		callback = function(p19)
+        t2.value41 = p19
+    end
+	})
+end
+t2.value64 = t5.Main:CreateText({
+	name = "Auto Check Boss",
+	text = "Status: Checking..."
+})
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            local v397 = t2.value1:FindFirstChild(t2.value41) or t2.value13:FindFirstChild(t2.value41)
+            local value64 = t2.value64
+
+            if v397 then
+                v397 = "Status: Boss Spawn ✅"
+            end
+
+            if not v397 then
+                v397 = "Status: Boss Not Spawn ❌"
+            end
+
+            value64:Set(v397)
+        end)
+    end
+end)
+t5.Main:CreateToggle({
+	name = "Auto Farm Boss",
+	description = "Turn on To Auto Farm Boss",
+	value = false,
+	callback = function(p20)
+    t2.value60 = p20
+
+    if not p20 then
+        stopTween()
+    end
+end
+})
+spawn(function()
+    while wait() do
+        if t2.value60 then
+            pcall(function()
+                if t2.value13:FindFirstChild(t2.value41) then
+                    for _, child in pairs(t2.value13:GetChildren()) do
+                        local v401 = child.Name == t2.value41
+
+                        if v401 then
+                            v401 = child:FindFirstChild("Humanoid")
+
+                            if v401 then
+                                v401 = child:FindFirstChild("HumanoidRootPart")
+
+                                if v401 then
+                                    v401 = child.Humanoid.Health > 0
+                                end
+                            end
+                        end
+
+                        if not v401 then
+                            continue
+                        end
+
+                        while true do
+                            task.wait()
+
+                            if not t2.value60 then
+                                break
+                            end
+
+                            AutoHaki()
+                            child.HumanoidRootPart.CanCollide = false
+                            child.Humanoid.WalkSpeed = 0
+                            child.HumanoidRootPart.Size = Vector3.new(80, 80, 80)
+                            topos(child.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                            pcall(function()
+                                sethiddenproperty(t2.value6, "SimulationRadius", 1e999)
+                            end)
+
+                            local v402 = not t2.value60
+
+                            if not v402 then
+                                v402 = not child.Parent
+
+                                if not v402 then
+                                    v402 = child.Humanoid.Health <= 0
+                                end
+                            end
+
+                            if v402 then
+                                break
+                            end
+                        end
+                    end
+
+                    return
+                end
+
+                local value41 = t2.value41
+                local v404 = v17(value41)
+                local v405 = if not v404 then nil else v404.CFrame
+
+                if v405 then
+                    topos(v405)
+                end
+            end)
+        end
+    end
+end)
+
+if World3 then
+    t5.Main:CreateSection({
+		name = "Bones"
+	})
+    local v24 = t5.Main:CreateText({
+		name = "Check Bone",
+		text = "Status: Checking..."
+	})
+    local u25 = v24
+    spawn(function()
+        while wait() do
+            pcall(function()
+                u25:Set("Your Bone : " .. t2.value15:InvokeServer("Bones", "Check"))
+            end)
+        end
+    end)
+    t5.Main:CreateToggle({
+		name = "Auto Farm Bone",
+		description = "Turn on To Auto Farm Bones",
+		value = false,
+		callback = function(p21)
+        t2.value15:InvokeServer("AbandonQuest")
+        t2.value59 = p21
+
+        if not p21 then
+            stopTween()
+        end
+    end
+	})
+    spawn(function()
+        while wait() do
+            local cFrame = CFrame.new(-9508.5673828125, 142.13984680176, 5737.3603515625)
+
+            if t2.value59 and World3 then
+                pcall(function()
+                    topos(cFrame)
+                    local t7 = {
+						"Reborn Skeleton",
+						"Living Zombie",
+						"Demonic Soul",
+						"Posessed Mummy"
+					}
+                    local v407 = false
+                    local _pairs = pairs
+                    local v409, v410, v411 = _pairs(t7)
+                    local g413
+                    repeat
+                        local v412
+
+                        v411, v412 = v409(v410, v411)
+
+                        if not v411 then
+                            g413 = true
+                        end
+
+                        if g413 then
+                            break
+                        end
+
+                        _pairs = t2.value13
+                    until _pairs:FindFirstChild(v412)
+                    if not g413 then
+                        _pairs = true
+                        v407 = true
+                    end
+                    g413 = false
+                    if v407 then
+                        for _, child in pairs(t2.value13:GetChildren()) do
+                            local v416 = table.find(t7, child.Name)
+
+                            if v416 then
+                                v416 = child:FindFirstChild("Humanoid")
+
+                                if v416 then
+                                    v416 = child:FindFirstChild("HumanoidRootPart")
+
+                                    if v416 then
+                                        v416 = child.Humanoid.Health > 0
+                                    end
+                                end
+                            end
+
+                            if not v416 then
+                                continue
+                            end
+
+                            while true do
+                                task.wait()
+
+                                if not t2.value59 then
+                                    break
+                                end
+
+                                AutoHaki()
+                                autoEquiTool(t2.value22)
+                                child.HumanoidRootPart.CanCollide = false
+                                child.Humanoid.WalkSpeed = 0
+                                child.Head.CanCollide = false
+                                topos(child.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                                pcall(function()
+                                    sethiddenproperty(t2.value6, "SimulationRadius", 1e999)
+                                end)
+
+                                local v417 = not t2.value59
+
+                                if not v417 then
+                                    v417 = not child.Parent
+
+                                    if not v417 then
+                                        v417 = child.Humanoid.Health <= 0
+                                    end
+                                end
+
+                                if v417 then
+                                    break
+                                end
+                            end
+                        end
+
+                        return
+                    end
+                    topos(CFrame.new(-9506.234375, 172.13061523438, 6117.0771484375))
+                    for _, v in ipairs(t7) do
+                        local v420 = v17(v)
+                        local v421 = if not v420 then nil else v420.CFrame
+
+                        if v421 then
+                            topos(v421)
+
+                            return
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+end
+t5.Main:CreateSection({
+	name = "Material"
+})
+_G.SelectMaterial = "None"
+function t2.value65(p22, p23)
+    local v189 = t2.value13:FindFirstChild(p22[1])
+
+    if not v189 then
+        v189 = #p22 > 1
+
+        if v189 then
+            v189 = t2.value13:FindFirstChild(p22[2])
+        end
+    end
+
+    if v189 then
+        local _pairs = pairs
+        for _, v192 in _pairs(t2.value13:GetChildren()) do
+            local v193 = table.find(p22, v192.Name)
+
+            if v193 then
+                v193 = v192:FindFirstChild("Humanoid")
+
+                if v193 then
+                    v193 = v192:FindFirstChild("HumanoidRootPart")
+
+                    if v193 then
+                        v193 = v192.Humanoid.Health > 0
+                    end
+                end
+            end
+
+            if not v193 then
+                continue
+            end
+
+            while true do
+                task.wait()
+                if not t2.value61 then
+                    break
+                end
+                AutoHaki()
+                autoEquiTool(t2.value22)
+                v192.HumanoidRootPart.CanCollide = false
+                v192.Humanoid.WalkSpeed = 0
+                v192.Head.CanCollide = false
+                topos(v192.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                pcall(function()
+                    sethiddenproperty(t2.value6, "SimulationRadius", 1e999)
+                end)
+                local v194 = not t2.value61
+                if not v194 then
+                    v194 = not v192.Parent
+
+                    if not v194 then
+                        v194 = v192.Humanoid.Health <= 0
+                    end
+                end
+                if v194 then
+                    break
+                end
+            end
+        end
+
+        return
+    end
+
+    topos(p23)
+
+    for _, v in ipairs(p22) do
+        local v197 = v17(v)
+        local v198 = if not v197 then nil else v197.CFrame
+
+        if v198 then
+            topos(v198)
+
+            return
+        end
+    end
+end
+if World1 then
+    t5.Main:CreateDropdown({
+		name = "Select Material",
+		options = {
+			"Farm Leather + Scrap Metal",
+			"Farm Fish Tail",
+			"Farm Magma Ore",
+			"Farm Angel Wings"
+		},
+		callback = function(p24)
+        _G.SelectMaterial = p24
+    end
+	})
+    spawn(function()
+        while wait() do
+            local value61 = t2.value61
+
+            if value61 then
+                value61 = _G.SelectMaterial == "Farm Leather + Scrap Metal"
+            end
+
+            if value61 then
+                pcall(function()
+                    t2.value65({
+						"Pirate",
+						"Brute"
+					}, CFrame.new(-967.433105, 13.5999937, 4034.24707))
+                end)
+            end
+        end
+    end)
+    spawn(function()
+        while wait() do
+            local value61 = t2.value61
+
+            if value61 then
+                value61 = _G.SelectMaterial == "Farm Fish Tail"
+            end
+
+            if value61 then
+                pcall(function()
+                    t2.value65({
+						"Fishman Commando",
+						"Fishman Warrior"
+					}, CFrame.new(61122.65234375, 18.497442245483, 1569.3997802734))
+                end)
+            end
+        end
+    end)
+    spawn(function()
+        while wait() do
+            local value61 = t2.value61
+
+            if value61 then
+                value61 = _G.SelectMaterial == "Farm Magma Ore"
+            end
+
+            if value61 then
+                pcall(function()
+                    t2.value65({
+						"Military Soldier",
+						"Military Spy"
+					}, CFrame.new(-5313.37012, 10.9500084, 8515.29395))
+                end)
+            end
+        end
+    end)
+    spawn(function()
+        while wait() do
+            local value61 = t2.value61
+
+            if value61 then
+                value61 = _G.SelectMaterial == "Farm Angel Wings"
+            end
+
+            if value61 then
+                pcall(function()
+                    t2.value65({
+						"Royal Soldier",
+						"Royal Squad"
+					}, CFrame.new(-7906.81592, 5634.6626, -1411.99194))
+                end)
+            end
+        end
+    end)
+end
+if World2 then
+    t5.Main:CreateDropdown({
+		name = "Select Material",
+		options = {
+			"Farm Leather + Scrap Metal",
+			"Farm Radiactive Material",
+			"Farm Magma Ore",
+			"Farm Vampire Fang",
+			"Farm Mystic Droplet",
+			"Farm Ectoplasm"
+		},
+		callback = function(p25)
+        _G.SelectMaterial = p25
+    end
+	})
+
+    local cFrame = CFrame.new(-1004.3244018555, 80.158866882324, 1424.6193847656)
+    local t8 = {
+		name = "Farm Leather + Scrap Metal",
+		mons = { "Mercenary" },
+		cf = cFrame
+	}
+    local cFrame3 = CFrame.new(-105.889565, 72.8076935, -670.247986)
+    local t9 = {
+		name = "Farm Radiactive Material",
+		mons = { "Factory Staff" },
+		cf = cFrame3
+	}
+    local cFrame4 = CFrame.new(-5213.3315429688, 49.737880706787, -4701.451171875)
+    local t10 = {
+		name = "Farm Magma Ore",
+		mons = {
+			"Lava Pirate",
+			"Magma Ninja"
+		},
+		cf = cFrame4
+	}
+    local cFrame5 = CFrame.new(-6037.66796875, 32.184638977051, -1340.6597900391)
+    local t11 = {
+		name = "Farm Vampire Fang",
+		mons = { "Vampire" },
+		cf = cFrame5
+	}
+    local cFrame6 = CFrame.new(-3352.9013671875, 285.01556396484, -10534.841796875)
+    local t12 = {
+		name = "Farm Mystic Droplet",
+		mons = { "Water Fighter" },
+		cf = cFrame6
+	}
+    local cFrame7 = CFrame.new(1212.0111083984, 150.79205322266, 33059.24609375)
+    local t13 = {
+		name = "Farm Ectoplasm",
+		mons = {
+			"Ship Deckhand",
+			"Ship Engineer"
+		},
+		cf = cFrame7
+	}
+
+    for _, v in ipairs({
+		t8,
+		t9,
+		t10,
+		t11,
+		t12,
+		t13
+	}) do
+        local v40 = v
+
+        spawn(function()
+            while wait() do
+                local value61 = t2.value61
+
+                if value61 then
+                    value61 = _G.SelectMaterial == v40.name
+                end
+
+                if value61 then
+                    pcall(function()
+                        t2.value65(v40.mons, v40.cf)
+                    end)
+                end
+            end
+        end)
+    end
+end
+if World3 then
+    t5.Main:CreateDropdown({
+		name = "Select Material",
+		options = {
+			"Farm Leather + Scrap Metal",
+			"Farm Fish Tail",
+			"Farm Mini Tusk",
+			"Farm Dragon Scale",
+			"Farm Conjured Cocoa"
+		},
+		callback = function(p26)
+        _G.SelectMaterial = p26
+    end
+	})
+
+    local cFrame = CFrame.new(-245.99638366699, 47.30615234375, 5584.1005859375)
+    local t14 = {
+		name = "Farm Leather + Scrap Metal",
+		mons = {
+			"Pirate Millionaire",
+			"Pistol Billionaire"
+		},
+		cf = cFrame
+	}
+    local cFrame8 = CFrame.new(-10994.701171875, 352.38140869141, -9002.1103515625)
+    local t15 = {
+		name = "Farm Fish Tail",
+		mons = {
+			"Fishman Raider",
+			"Fishman Captain"
+		},
+		cf = cFrame8
+	}
+    local cFrame9 = CFrame.new(-13680.607421875, 501.08154296875, -6991.189453125)
+    local t16 = {
+		name = "Farm Mini Tusk",
+		mons = { "Mythological Pirate" },
+		cf = cFrame9
+	}
+    local cFrame10 = CFrame.new(6668.76172, 481.376923, 329.12207)
+    local t17 = {
+		name = "Farm Dragon Scale",
+		mons = {
+			"Dragon Crew Archer",
+			"Dragon Crew Warrior"
+		},
+		cf = cFrame10
+	}
+    local cFrame11 = CFrame.new(233.22836303711, 29.876001358032, -12201.233398438)
+    local t18 = {
+		name = "Farm Conjured Cocoa",
+		mons = {
+			"Chocolate Bar Battler",
+			"Cocoa Warrior",
+			"Sweet Thief",
+			"Candy Rebel"
+		},
+		cf = cFrame11
+	}
+
+    for _, v in ipairs({
+		t14,
+		t15,
+		t16,
+		t17,
+		t18
+	}) do
+        local v53 = v
+
+        spawn(function()
+            while wait() do
+                local value61 = t2.value61
+
+                if value61 then
+                    value61 = _G.SelectMaterial == v53.name
+                end
+
+                if value61 then
+                    pcall(function()
+                        t2.value65(v53.mons, v53.cf)
+                    end)
+                end
+            end
+        end)
+    end
+end
+t5.Main:CreateToggle({
+	name = "Auto Farm Material",
+	value = false,
+	callback = function(p27)
+    if not p27 then
+        stopTween()
+    end
+end
+})
+t5.Main:CreateSection({
+	name = "Stats"
+})
+t2.value66 = t5.Main:CreateText({
+	name = "Stats Level",
+	text = "Loading data..."
+})
+task.spawn(function()
+    while true do
+        local value66 = t2.value66
+        local t19 = { t2.value30() }
+
+        value66:Set(v3(t19))
+        task.wait(0.5)
+    end
+end)
+t5.Main:CreateDropdown({
+	name = "Select Stat to Upgrade",
+	options = {
+		"Melee",
+		"Defense",
+		"Sword",
+		"Gun",
+		"Blox Fruit"
+	},
+	value = "Melee",
+	callback = function(p28)
+    t2.value32 = p28
+end
+})
+t5.Main:CreateSlider({
+	name = "Amount",
+	range = {
+		1,
+		50
+	},
+	increment = 1,
+	value = 1,
+	callback = function(p29)
+    t2.value33 = p29
+end
+})
+t5.Main:CreateToggle({
+	name = "Auto Upgrade",
+	description = "Automatically spend stat points",
+	value = false,
+	callback = function(p30)
+    t2.value31 = p30
+
+    if p30 then
+        task.spawn(function()
+            while t2.value31 do
+                pcall(function()
+                    t2.value15:InvokeServer("AddPoint", t2.value32, t2.value33)
+                end)
+                task.wait(0.1)
+            end
+        end)
+    end
+end
+})
+t5.Main:CreateSection({
+	name = "Equip"
+})
+t5.Main:CreateInput({
+	name = "Input Accessory Name",
+	description = "Only Accessory ur Own",
+	placeholder = "Contoh: Tomoe Ring",
+	callback = function(p31)
+    t2.value34 = p31
+end
+})
+t5.Main:CreateButton({
+	name = "Equip Item",
+	description = "Equip Accessory",
+	callback = function()
+    local value34 = t2.value34
+
+    if value34 then
+        value34 = t2.value34 ~= ""
+    end
+
+    if value34 then
+        t2.value15:InvokeServer("LoadItem", t2.value34)
+    end
+end
+})
+t5.Teleports:CreateSection({
+	name = "Sea"
+})
+t5.Teleports:CreateToggle({
+	name = "Teleport To First Sea",
+	value = false,
+	callback = function(p32)
+    if p32 then
+        t2.value15:InvokeServer("TravelMain")
+    end
+end
+})
+t5.Teleports:CreateToggle({
+	name = "Teleport To Second Sea",
+	value = false,
+	callback = function(p33)
+    if p33 then
+        t2.value15:InvokeServer("TravelDressrosa")
+    end
+end
+})
+t5.Teleports:CreateToggle({
+	name = "Teleport To Third Sea",
+	value = false,
+	callback = function(p34)
+    if p34 then
+        t2.value15:InvokeServer("TravelZou")
+    end
+end
+})
+t5.Teleports:CreateSection({
+	name = "NPC"
+})
+local t20 = {}
+for _, child in pairs(t2.value14:GetChildren()) do
+    if child:IsA("Model") and child:FindFirstChild("HumanoidRootPart") then
+        t20[#t20 + 1] = child.Name
+    end
+end
+t2.value67 = nil
+t2.value68 = false
+t5.Teleports:CreateDropdown({
+	name = "Teleport to NPC",
+	description = "Select an NPC to teleport to",
+	options = t20,
+	callback = function(p35)
+    t2.value67 = p35
+
+    local p35_2 = t2.value14:FindFirstChild(p35)
+    local v221 = p35_2
+
+    if p35_2 then
+        v221 = p35_2:FindFirstChild("HumanoidRootPart")
+    end
+
+    if v221 then
+        v18(p35_2.HumanoidRootPart.Position + Vector3.new(0, 3, 0))
+    end
+end
+})
+t5.Teleports:CreateToggle({
+	name = "Auto Teleport NPC",
+	description = "Keep teleporting to selected NPC",
+	value = false,
+	callback = function(p36)
+    t2.value68 = p36
+
+    if p36 then
+        task.spawn(function()
+            while t2.value68 do
+                if t2.value67 then
+                    local t2value67 = t2.value14:FindFirstChild(t2.value67)
+                    local v423 = t2value67
+
+                    if t2value67 then
+                        v423 = t2value67:FindFirstChild("HumanoidRootPart")
+                    end
+
+                    if v423 then
+                        v18(t2value67.HumanoidRootPart.Position + Vector3.new(0, 3, 0))
+                    end
+                end
+
+                task.wait(0.5)
+            end
+
+            stopTween()
+        end)
+
+        return
+    end
+
+    stopTween()
+end
+})
+t2.value69 = t2.value5:WaitForChild("_WorldOrigin"):WaitForChild("PlayerSpawns"):WaitForChild("Pirates")
+
+local t21 = {}
+for _, child in pairs(t2.value69:GetChildren()) do
+    if child:IsA("Model") then
+        t21[#t21 + 1] = child.Name
+    end
+end
+t5.Teleports:CreateSection({
+	name = "Island"
+})
+t2.value70 = nil
+t2.value71 = false
+t5.Teleports:CreateDropdown({
+	name = "Teleport to Island",
+	description = "Select an island to teleport to",
+	options = t21,
+	callback = function(p37)
+    t2.value70 = p37
+
+    local p37_2 = t2.value69:FindFirstChild(p37)
+
+    if p37_2 then
+        local Base = p37_2:FindFirstChild("Base")
+
+        if not Base then
+            Base = p37_2:FindFirstChildWhichIsA("Part")
+        end
+
+        if Base then
+            v18(Base.Position + Vector3.new(0, 10, 0))
+        end
+    end
+end
+})
+t5.Teleports:CreateToggle({
+	name = "Auto Teleport Island",
+	description = "Keep teleporting to selected Island",
+	value = false,
+	callback = function(p38)
+    t2.value71 = p38
+
+    if p38 then
+        task.spawn(function()
+            while t2.value71 do
+                if t2.value70 then
+                    local t2value70 = t2.value69:FindFirstChild(t2.value70)
+
+                    if t2value70 then
+                        local Base = t2value70:FindFirstChild("Base")
+
+                        if not Base then
+                            Base = t2value70:FindFirstChildWhichIsA("Part")
+                        end
+
+                        if Base then
+                            v18(Base.Position + Vector3.new(0, 10, 0))
+                        end
+                    end
+                end
+
+                task.wait(0.5)
+            end
+
+            stopTween()
+        end)
+
+        return
+    end
+
+    stopTween()
+end
+})
+t5.Teleports:CreateSection({
+	name = "Player"
+})
+t2.value72 = nil
+t2.value73 = false
+t2.value74 = t5.Teleports:CreateDropdown({
+	name = "Teleport to Player",
+	description = "Select a player to teleport to",
+	options = {},
+	callback = function(p39)
+    t2.value72 = p39
+
+    local p39_2 = t2.value2:FindFirstChild(p39)
+
+    if p39_2 and p39_2.Character then
+        local HumanoidRootPart = p39_2.Character:FindFirstChild("HumanoidRootPart")
+
+        if HumanoidRootPart then
+            v18(HumanoidRootPart.Position + Vector3.new(0, 3, 0))
+        end
+    end
+end
+})
+t5.Teleports:CreateToggle({
+	name = "Auto Teleport Player",
+	description = "Keep teleporting to selected Player",
+	value = false,
+	callback = function(p40)
+    t2.value73 = p40
+
+    if p40 then
+        task.spawn(function()
+            while t2.value73 do
+                if t2.value72 then
+                    local t2value72 = t2.value2:FindFirstChild(t2.value72)
+
+                    if t2value72 and t2value72.Character then
+                        local HumanoidRootPart = t2value72.Character:FindFirstChild("HumanoidRootPart")
+
+                        if HumanoidRootPart then
+                            v18(HumanoidRootPart.Position + Vector3.new(0, 3, 0))
+                        end
+                    end
+                end
+
+                task.wait(0.5)
+            end
+
+            stopTween()
+        end)
+
+        return
+    end
+
+    stopTween()
+end
+})
+local function v60()
+    local t22 = {}
+
+    for _, player in ipairs(t2.value2:GetPlayers()) do
+        if player ~= t2.value6 then
+            t22[#t22 + 1] = player.Name
+        end
+    end
+
+    pcall(function()
+        t2.value74:SetOptions(t22)
+    end)
+end
+v60()
+t5.Teleports:CreateButton({
+	name = "Refresh Player List",
+	callback = function()
+    v60()
+end
+})
+t5.Raid:CreateSection({
+	name = "Raid/Fruit"
+})
+t5.Raid:CreateDropdown({
+	name = "Select Chip Raid",
+	options = {
+		"Flame",
+		"Ice",
+		"Sand",
+		"Dark",
+		"Light",
+		"Magma",
+		"Quake",
+		"Buddha",
+		"Spider",
+		"Phoenix",
+		"Rumble",
+		"Dough"
+	},
+	callback = function(p41)
+    t2.value40 = p41
+end
+})
+t5.Raid:CreateToggle({
+	name = "Auto Buy Chip",
+	value = false,
+	callback = function(p42)
+    t2.value49 = p42
+    spawn(function()
+        while wait() do
+            if t2.value49 then
+                pcall(function()
+                    t2.value15:InvokeServer("RaidsNpc", "Select", t2.value40)
+                end)
+            end
+        end
+    end)
+end
+})
+t5.Raid:CreateToggle({
+	name = "Auto Start Raid",
+	value = false,
+	callback = function(p43)
+    t2.value50 = p43
+    spawn(function()
+        while wait() do
+            pcall(function()
+                if t2.value50 and t2.value6.PlayerGui.Main.Timer.Visible == false then
+                    local v479 = not t2.value5._WorldOrigin.Locations:FindFirstChild("Island 1")
+
+                    if v479 then
+                        v479 = t2.value6.Backpack:FindFirstChild("Special Microchip")
+
+                        if not v479 then
+                            v479 = t2.value6.Character:FindFirstChild("Special Microchip")
+                        end
+                    end
+
+                    if v479 then
+                        if World2 then
+                            topos(CFrame.new(-6438.73535, 250.645355, -4501.50684))
+                            t2.value15:InvokeServer("SetSpawnPoint")
+                            fireclickdetector(t2.value5.Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
+
+                            return
+                        end
+
+                        if World3 then
+                            t2.value15:InvokeServer("requestEntrance", Vector3.new(-5075.5092773438, 314.51550292969, -3150.0224609375))
+                            topos(CFrame.new(-5017.40869, 314.844055, -2823.0127))
+                            t2.value15:InvokeServer("SetSpawnPoint")
+                            fireclickdetector(t2.value5.Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
+                        end
+                    end
+                end
+            end)
+        end
+    end)
+end
+})
+t5.Raid:CreateToggle({
+	name = "Auto Farm Raid Next Island",
+	value = false,
+	callback = function(p44)
+    t2.value51 = p44
+
+    if not p44 then
+        stopTween()
+    end
+end
+})
+local function v61(p45)
+    if t2.value5._WorldOrigin.Locations:FindFirstChild("Island " .. p45) then
+        local n3 = 4500
+
+        for _, child in pairs(t2.value5._WorldOrigin.Locations:GetChildren()) do
+            local v242 = child.Name == "Island " .. p45
+
+            if v242 then
+                v242 = n3 > (child.Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude
+            end
+
+            if v242 then
+                n3 = (child.Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude
+            end
+        end
+
+        for _, child in pairs(t2.value5._WorldOrigin.Locations:GetChildren()) do
+            local v245 = child.Name == "Island " .. p45
+
+            if v245 then
+                v245 = n3 >= (child.Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude
+            end
+
+            if v245 then
+                return child
+            end
+        end
+    end
+end
+t2.value75 = nil
+function t2.value75()
+    local HumanoidRootPartPosition = t2.value6.Character.HumanoidRootPart.Position
+
+    for _, v in ipairs({
+		5,
+		4,
+		3,
+		2,
+		1
+	}) do
+        local v249 = v61(v)
+        local v250 = v249
+
+        if v249 then
+            v250 = (v249.Position - HumanoidRootPartPosition).Magnitude <= 4500
+        end
+
+        if v250 then
+            return v249
+        end
+    end
+
+    return nil
+end
+spawn(function()
+    while task.wait() do
+        if t2.value51 then
+            pcall(function()
+                local v428 = t2.value75()
+
+                if v428 then
+                    AutoHaki()
+                    autoEquiTool(t2.value22)
+
+                    for _, child in pairs(t2.value13:GetChildren()) do
+                        local HumanoidRootPart = child:FindFirstChild("HumanoidRootPart")
+                        local Humanoid = child:FindFirstChild("Humanoid")
+                        local v433 = HumanoidRootPart
+
+                        if HumanoidRootPart then
+                            if Humanoid then
+                                Humanoid = Humanoid.Health > 0
+                            end
+
+                            v433 = Humanoid
+                        end
+
+                        if v433 and (HumanoidRootPart.Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude <= 1000 then
+                            topos(HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                        end
+                    end
+
+                    topos(v428.CFrame * CFrame.new(0, 60, 0))
+                end
+            end)
+        end
+    end
+end)
+t5.Raid:CreateToggle({
+	name = "Awakener Fruit",
+	value = false,
+	callback = function(p46)
+    t2.value47 = p46
+    spawn(function()
+        while task.wait() do
+            if t2.value47 then
+                pcall(function()
+                    t2.value15:InvokeServer("Awakener", "Awaken")
+                end)
+            end
+        end
+    end)
+end
+})
+t5.Raid:CreateToggle({
+	name = "Auto Get Fruit Low Beli",
+	value = false,
+	callback = function(p47)
+    t2.value48 = p47
+    spawn(function()
+        local t23 = {
+				"Rocket-Rocket",
+				"Spin-Spin",
+				"Chop-Chop",
+				"Spring-Spring",
+				"Bomb-Bomb",
+				"Smoke-Smoke",
+				"Spike-Spike",
+				"Flame-Flame",
+				"Falcon-Falcon",
+				"Ice-Ice",
+				"Sand-Sand",
+				"Dark-Dark",
+				"Ghost-Ghost",
+				"Diamond-Diamond",
+				"Light-Light",
+				"Rubber-Rubber",
+				"Creation-Creation"
+			}
+
+        while wait(1) and t2.value48 do
+            pcall(function()
+                for _, v in ipairs(t23) do
+                    t2.value15:InvokeServer("LoadFruit", v)
+                end
+            end)
+        end
+    end)
+end
+})
+t5.SeaEvent:CreateSection({
+	name = "Sea"
+})
+function TPB(p48)
+    local vector3 = Vector3.new(0, 50, 0)
+    local value5 = t2.value5
+    local v256 = p48 + vector3
+    local Magnitude = (value5.Boats.PirateBrigade.VehicleSeat.CFrame.Position - v256.Position).Magnitude
+    local v258 = t2.value4:Create(t2.value5.Boats.PirateBrigade.VehicleSeat, TweenInfo.new(Magnitude / t2.value9, Enum.EasingStyle.Linear), {
+		CFrame = v256
+	})
+
+    v258:Play()
+
+    return {
+		Stop = function()
+        v258:Cancel()
+    end
+	}
+end
+function TPP(p49)
+    if t2.value6.Character:WaitForChild("Humanoid").Health <= 0 then
+        repeat
+            wait()
+
+            local Humanoid = t2.value6.Character:WaitForChild("Humanoid")
+
+            if Humanoid then
+                Humanoid = t2.value6.Character:WaitForChild("Humanoid").Health > 0
+            end
+        until Humanoid
+
+        wait(7)
+
+        return
+    end
+
+    local Character8 = t2.value6.Character
+    local HumanoidRootPart = Character8.HumanoidRootPart
+
+    if not Character8:FindFirstChild("PartTele") then
+        local Part = Instance.new("Part")
+
+        Part.Size = Vector3.new(10, 1, 10)
+        Part.Name = "PartTele"
+        Part.Anchored = true
+        Part.Transparency = 1
+        Part.CanCollide = false
+        Part.CFrame = HumanoidRootPart.CFrame
+        Part.Parent = Character8
+        Part:GetPropertyChangedSignal("CFrame"):Connect(function()
+            task.wait(0.01)
+
+            local v435 = Character8
+
+            if v435 then
+                v435 = Character8:FindFirstChild("HumanoidRootPart")
+
+                if v435 then
+                    v435 = Character8:FindFirstChild("PartTele")
+                end
+            end
+
+            if v435 then
+                Character8.HumanoidRootPart.CFrame = Character8.PartTele.CFrame
+            end
+        end)
+    end
+
+    local Magnitude = (p49.Position - Character8.PartTele.Position).Magnitude
+    local v265 = t2.value4:Create(Character8.PartTele, TweenInfo.new(Magnitude / t2.value9, Enum.EasingStyle.Linear), {
+		CFrame = p49
+	})
+
+    v265:Play()
+
+    return {
+		Stop = function()
+        v265:Cancel()
+    end
+	}
+end
+t5.SeaEvent:CreateToggle({
+	name = "Auto Drive Boats",
+	value = false,
+	callback = function(p50)
+    t2.value52 = p50
+    t2.value42 = p50
+
+    if not p50 then
+        stopTween()
+    end
+end
+})
+spawn(function()
+    while wait() do
+        pcall(function()
+            if t2.value52 then
+                local v436 = not t2.value13:FindFirstChild("Shark")
+
+                if not v436 then
+                    v436 = not t2.value13:FindFirstChild("Terrorshark")
+
+                    if not v436 then
+                        v436 = not t2.value13:FindFirstChild("Piranha")
+
+                        if not v436 then
+                            v436 = not t2.value13:FindFirstChild("Fish Crew Member")
+                        end
+                    end
+                end
+
+                if v436 then
+                    if not t2.value5.Boats:FindFirstChild("PirateBrigade") then
+                        TPP(CFrame.new(-16927.451171875, 9.0863618850708, 433.86428833008))
+
+                        if (CFrame.new(-16927.451171875, 9.0863618850708, 433.86428833008).Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+                            t2.value15:InvokeServer("BuyBoat", "PirateBrigade")
+
+                            return
+                        end
+                    elseif t2.value5.Boats:FindFirstChild("PirateBrigade") then
+                        if t2.value6.Character:WaitForChild("Humanoid").Sit == false then
+                            TPP(t2.value5.Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0, 10, 0))
+
+                            return
+                        end
+
+                        for _, child in pairs(t2.value5.Boats:GetChildren()) do
+                            if child.Name == "PirateBrigade" then
+                                repeat
+                                    wait()
+
+                                    if (CFrame.new(-17013.80078125, 10.962434768677, 438.01699829102).Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+                                        TPB(CFrame.new(-37813.6953, -0.3221744, 6105.16895))
+                                    elseif (CFrame.new(-37813.6953, -0.3221744, 6105.16895).Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+                                        TPB(CFrame.new(-42250.2227, -0.3221744, 9247.07715))
+                                    elseif (CFrame.new(-42250.2227, -0.3221744, 9247.07715).Position - t2.value6.Character.HumanoidRootPart.Position).Magnitude <= 10 then
+                                        TPB(CFrame.new(-37813.6953, -0.3221744, 6105.16895))
+                                    end
+
+                                    local Shark = t2.value13:FindFirstChild("Shark")
+
+                                    if not Shark then
+                                        Shark = t2.value13:FindFirstChild("Terrorshark")
+
+                                        if not Shark then
+                                            Shark = t2.value13:FindFirstChild("Piranha")
+
+                                            if not Shark then
+                                                Shark = t2.value13:FindFirstChild("Fish Crew Member") or t2.value52 == false
+                                            end
+                                        end
+                                    end
+                                until Shark
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+spawn(function()
+    pcall(function()
+        while wait() do
+            local value52 = t2.value52
+
+            if value52 then
+                value52 = t2.value13:FindFirstChild("Shark")
+
+                if not value52 then
+                    value52 = t2.value13:FindFirstChild("Terrorshark")
+
+                    if not value52 then
+                        value52 = t2.value13:FindFirstChild("Piranha")
+
+                        if not value52 then
+                            value52 = t2.value13:FindFirstChild("Fish Crew Member")
+                        end
+                    end
+                end
+            end
+
+            if value52 then
+                t2.value6.Character.Humanoid.Sit = false
+            end
+        end
+    end)
+end)
+t5.SeaEvent:CreateToggle({
+	name = "Auto Kill Terror Shank",
+	value = false,
+	callback = function(p51)
+    t2.value53 = p51
+
+    if not p51 then
+        stopTween()
+    end
+end
+})
+spawn(function()
+    while wait() do
+        if t2.value53 and World3 then
+            pcall(function()
+                if t2.value13:FindFirstChild("Terrorshark") then
+                    local _pairs = pairs
+                    for _, v443 in _pairs(t2.value13:GetChildren()) do
+                        local v444 = v443.Name == "Terrorshark"
+
+                        if v444 then
+                            v444 = v443:FindFirstChild("Humanoid")
+
+                            if v444 then
+                                v444 = v443:FindFirstChild("HumanoidRootPart")
+
+                                if v444 then
+                                    v444 = v443.Humanoid.Health > 0
+                                end
+                            end
+                        end
+
+                        if not v444 then
+                            continue
+                        end
+
+                        while true do
+                            task.wait()
+                            if not t2.value53 then
+                                break
+                            end
+                            AutoHaki()
+                            autoEquiTool(t2.value22)
+                            v443.HumanoidRootPart.CanCollide = false
+                            v443.Humanoid.WalkSpeed = 0
+                            v443.Head.CanCollide = false
+                            t2.value6.Character.Humanoid.Sit = false
+                            if t2.value5._WorldOrigin:FindFirstChild("Typhoon Splash") then
+                                topos(v443.HumanoidRootPart.CFrame * CFrame.new(0, 300, 0))
+                            else
+                                topos(v443.HumanoidRootPart.CFrame * CFrame.new(0, 60, 0))
+                            end
+                            local v445 = not t2.value53
+                            if not v445 then
+                                v445 = not v443.Parent
+
+                                if not v445 then
+                                    v445 = v443.Humanoid.Health <= 0
+                                end
+                            end
+                            if v445 then
+                                break
+                            end
+                        end
+                    end
+
+                    return
+                end
+
+                if not t2.value6.Character.Humanoid.Sit then
+                    topos(t2.value5.Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0, 1, 0))
+                end
+            end)
+        end
+    end
+end)
+t5.SeaEvent:CreateToggle({
+	name = "Auto Kill Shark",
+	value = false,
+	callback = function(p52)
+    t2.value54 = p52
+
+    if not p52 then
+        stopTween()
+    end
+end
+})
+spawn(function()
+    while wait() do
+        local value54 = t2.value54
+
+        if value54 then
+            value54 = World3 and t2.value52
+        end
+
+        if value54 then
+            pcall(function()
+                if t2.value13:FindFirstChild("Shark") then
+                    local _pairs = pairs
+                    for _, v448 in _pairs(t2.value13:GetChildren()) do
+                        local v449 = v448.Name == "Shark"
+
+                        if v449 then
+                            v449 = v448:FindFirstChild("Humanoid")
+
+                            if v449 then
+                                v449 = v448:FindFirstChild("HumanoidRootPart")
+
+                                if v449 then
+                                    v449 = v448.Humanoid.Health > 0
+                                end
+                            end
+                        end
+
+                        if not v449 then
+                            continue
+                        end
+
+                        while true do
+                            task.wait()
+                            if not t2.value54 then
+                                break
+                            end
+                            AutoHaki()
+                            autoEquiTool(t2.value22)
+                            v448.HumanoidRootPart.CanCollide = false
+                            v448.Humanoid.WalkSpeed = 0
+                            v448.Head.CanCollide = false
+                            topos(v448.HumanoidRootPart.CFrame * CFrame.new(5, 40, 10))
+                            _pairs = t2.value6.Character.Humanoid
+                            _pairs.Sit = false
+                            local v450 = not t2.value54
+                            if not v450 then
+                                v450 = not v448.Parent
+
+                                if not v450 then
+                                    v450 = v448.Humanoid.Health <= 0
+                                end
+                            end
+                            if v450 then
+                                break
+                            end
+                        end
+                    end
+
+                    return
+                end
+
+                if not t2.value6.Character.Humanoid.Sit then
+                    topos(t2.value5.Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0, -1, 0))
+                end
+            end)
+        end
+    end
+end)
+t5.SeaEvent:CreateToggle({
+	name = "Auto Kill Piranha",
+	value = false,
+	callback = function(p53)
+    t2.value55 = p53
+
+    if not p53 then
+        stopTween()
+    end
+end
+})
+spawn(function()
+    while wait() do
+        if t2.value55 and World3 then
+            pcall(function()
+                if t2.value13:FindFirstChild("Piranha") then
+                    local _pairs = pairs
+                    for _, v453 in _pairs(t2.value13:GetChildren()) do
+                        local v454 = v453.Name == "Piranha"
+
+                        if v454 then
+                            v454 = v453:FindFirstChild("Humanoid")
+
+                            if v454 then
+                                v454 = v453:FindFirstChild("HumanoidRootPart")
+
+                                if v454 then
+                                    v454 = v453.Humanoid.Health > 0
+                                end
+                            end
+                        end
+
+                        if not v454 then
+                            continue
+                        end
+
+                        while true do
+                            task.wait()
+                            if not t2.value55 then
+                                break
+                            end
+                            AutoHaki()
+                            autoEquiTool(t2.value22)
+                            v453.HumanoidRootPart.CanCollide = false
+                            v453.Humanoid.WalkSpeed = 0
+                            v453.Head.CanCollide = false
+                            topos(v453.HumanoidRootPart.CFrame * CFrame.new(5, 40, 10))
+                            _pairs = t2.value6.Character.Humanoid
+                            _pairs.Sit = false
+                            local v455 = not t2.value55
+                            if not v455 then
+                                v455 = not v453.Parent
+
+                                if not v455 then
+                                    v455 = v453.Humanoid.Health <= 0
+                                end
+                            end
+                            if v455 then
+                                break
+                            end
+                        end
+                    end
+
+                    return
+                end
+
+                if not t2.value6.Character.Humanoid.Sit then
+                    topos(t2.value5.Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(2, 20, 2))
+                end
+            end)
+        end
+    end
+end)
+t5.SeaEvent:CreateToggle({
+	name = "Auto Kill Fish Crew Member",
+	value = false,
+	callback = function(p54)
+    t2.value56 = p54
+
+    if not p54 then
+        stopTween()
+    end
+end
+})
+spawn(function()
+    while wait() do
+        if t2.value56 and World3 then
+            pcall(function()
+                if t2.value13:FindFirstChild("Fish Crew Member") then
+                    for _, child in pairs(t2.value13:GetChildren()) do
+                        local v458 = child.Name == "Fish Crew Member"
+
+                        if v458 then
+                            v458 = child:FindFirstChild("Humanoid")
+
+                            if v458 then
+                                v458 = child:FindFirstChild("HumanoidRootPart")
+
+                                if v458 then
+                                    v458 = child.Humanoid.Health > 0
+                                end
+                            end
+                        end
+
+                        if not v458 then
+                            continue
+                        end
+
+                        while true do
+                            task.wait()
+
+                            if not t2.value56 then
+                                break
+                            end
+
+                            AutoHaki()
+                            autoEquiTool(t2.value22)
+                            child.HumanoidRootPart.CanCollide = false
+                            child.Humanoid.WalkSpeed = 0
+                            child.Head.CanCollide = false
+                            topos(child.HumanoidRootPart.CFrame * CFrame.new(5, 40, 10))
+                            t2.value6.Character.Humanoid.Sit = false
+
+                            local v459 = not t2.value56
+
+                            if not v459 then
+                                v459 = not child.Parent
+
+                                if not v459 then
+                                    v459 = child.Humanoid.Health <= 0
+                                end
+                            end
+
+                            if v459 then
+                                break
+                            end
+                        end
+                    end
+
+                    return
+                end
+
+                if not t2.value6.Character.Humanoid.Sit then
+                    topos(t2.value5.Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0, 1, 0))
+                end
+            end)
+        end
+    end
+end)
+t5.Boat:CreateSection({
+	name = "Accelerate"
+})
+t5.Boat:CreateSlider({
+	name = "Speed Boat",
+	description = "Adjust MaxSpeed property of VehicleSeats inside Boats",
+	range = {
+		10,
+		400
+	},
+	increment = 1,
+	value = 100,
+	callback = function(p55)
+    local Boats = workspace:FindFirstChild("Boats")
+
+    if not Boats then
+        return
+    end
+
+    for _, child in ipairs(Boats:GetChildren()) do
+        local VehicleSeat = child:FindFirstChildWhichIsA("VehicleSeat", true)
+
+        if VehicleSeat then
+            VehicleSeat.MaxSpeed = p55
+        end
+    end
+end
+})
+t5.Boat:CreateToggle({
+	name = "Fly Mode",
+	value = false,
+	description = "Enable or disable fly mode for all boats.",
+	callback = function(p56)
+    local Boats = workspace:FindFirstChild("Boats")
+
+    if not Boats then
+        return
+    end
+
+    local GetChildren = Boats.GetChildren
+
+    for _, v in ipairs(GetChildren(Boats)) do
+        local PrimaryPart = v:FindFirstChild("PrimaryPart")
+
+        if not PrimaryPart then
+            PrimaryPart = v:FindFirstChildWhichIsA("BasePart")
+        end
+
+        if PrimaryPart then
+            if p56 then
+                local BodyVelocity = Instance.new("BodyVelocity")
+
+                BodyVelocity.Velocity = Vector3.new(0, 100, 0)
+                BodyVelocity.MaxForce = Vector3.new(0, 1e999, 0)
+                BodyVelocity.P = 1250
+                BodyVelocity.Name = "FlyForce"
+                BodyVelocity.Parent = PrimaryPart
+            else
+                local GetChildren2 = PrimaryPart.GetChildren
+
+                for _, v5 in ipairs(GetChildren2(PrimaryPart)) do
+                    if v5.Name == "FlyForce" then
+                        v5:Destroy()
+                    end
+                end
+            end
+        end
+    end
+end
+})
+t5.Boat:CreateButton({
+	name = "Teleport to Boat",
+	description = "Teleport ke boat pertama yang ditemukan atau pathfind jika jauh.",
+	callback = function()
+    local Boats = workspace:FindFirstChild("Boats")
+
+    if Boats and #Boats:GetChildren() > 0 then
+        local VehicleSeat = Boats:GetChildren()[1]:FindFirstChildWhichIsA("VehicleSeat")
+
+        if VehicleSeat then
+            local Character9 = t2.value6.Character
+
+            if Character9 and Character9:FindFirstChild("HumanoidRootPart") then
+                Character9.HumanoidRootPart.CFrame = VehicleSeat.CFrame
+            end
+        end
+    end
+end
+})
+t5.Autos:CreateSection({
+	name = "Autos"
+})
+if World1 then
+    t5.Autos:CreateToggle({
+		name = "Auto Second Sea",
+		value = false,
+		callback = function(p57)
+        t2.value24 = p57
+
+        if not p57 then
+            stopTween()
+        end
+    end
+	})
+end
+if World2 then
+    t5.Autos:CreateToggle({
+		name = "Auto Third Sea",
+		value = false,
+		callback = function(p58)
+        _G.ThirdSea = p58
+
+        if not p58 then
+            stopTween()
+        end
+    end
+	})
+    t5.Autos:CreateSection({
+		name = "Factory"
+	})
+    t5.Autos:CreateToggle({
+		name = "Auto Factory",
+		description = "Turn Off Auto Farm",
+		value = false,
+		callback = function(p59)
+        _G.AutoFactory = p59
+
+        if not p59 then
+            stopTween()
+        end
+    end
+	})
+    spawn(function()
+        while wait() do
+            if _G.AutoFactory then
+                if t2.value13:FindFirstChild("Core") then
+                    for _, child in pairs(t2.value13:GetChildren()) do
+                        local v295 = child.Name == "Core"
+
+                        if v295 then
+                            v295 = child.Humanoid.Health > 0
+                        end
+
+                        if not v295 then
+                            continue
+                        end
+
+                        while true do
+                            task.wait()
+
+                            if not _G.AutoFactory then
+                                break
+                            end
+
+                            AutoHaki()
+                            autoEquiTool(t2.value22)
+                            topos(CFrame.new(448.46756, 199.356781, -441.389252))
+                            Attack()
+
+                            local v296 = child.Humanoid.Health <= 0
+
+                            if not v296 then
+                                v296 = not _G.AutoFactory
+                            end
+
+                            if v296 then
+                                break
+                            end
+                        end
+                    end
+                else
+                    topos(CFrame.new(448.46756, 199.356781, -441.389252))
+                end
+            end
+        end
+    end)
+end
+if World3 then
+    t5.Autos:CreateToggle({
+		name = "Auto Buy Bone",
+		value = false,
+		callback = function(p60)
+        t2.value58 = p60
+
+        if p60 then
+            spawn(function()
+                while wait(0.1) do
+                    if t2.value58 then
+                        t2.value15:InvokeServer("Bones", "Buy", 1, 1)
+                    end
+                end
+            end)
+        end
+    end
+	})
+    t5.Main:CreateSection({
+		name = "Cake Prince"
+	})
+
+    local v62 = t5.Main:CreateText({
+		name = "Check Cake Princess",
+		text = "Status: Checking..."
+	})
+
+    task.spawn(function()
+        while task.wait() do
+            pcall(function()
+                local v460 = t2.value15:InvokeServer("CakePrinceSpawner")
+                local v461 = string.len(v460)
+
+                if v461 == 88 then
+                    v62:Set("Killed : " .. string.sub(v460, 39, 41) .. " / 500")
+
+                    return
+                end
+
+                if v461 == 87 then
+                    v62:Set("Killed : " .. string.sub(v460, 39, 40) .. " / 500")
+
+                    return
+                end
+
+                if v461 == 86 then
+                    v62:Set("Killed : " .. string.sub(v460, 39, 39) .. " / 500")
+
+                    return
+                end
+
+                v62:Set("Prince King Spawned ✅")
+            end)
+        end
+    end)
+    t5.Autos:CreateToggle({
+		name = "Auto Farm Cake Prince",
+		value = false,
+		callback = function(p61)
+        t2.value57 = p61
+
+        if not p61 then
+            stopTween()
+        end
+    end
+	})
+
+    local cFrame = CFrame.new(-2130.8071289062, 69.956344604492, -12327.83984375)
+    local t24 = {
+		"Cookie Crafter",
+		"Cake Guard",
+		"Baking Staff",
+		"Head Baker"
+	}
+    local t25 = {
+		CFrame.new(-1436.86011, 167.753616, -12296.9512),
+		CFrame.new(-2383.78979, 150.450592, -12126.4961),
+		CFrame.new(-2231.2793, 168.256653, -12845.7559)
+	}
+
+    task.spawn(function()
+        while task.wait() do
+            if t2.value57 then
+                pcall(function()
+                    local v462 = t2.value13:FindFirstChild("Cake Prince")
+
+                    if v462 then
+                        local Humanoid = v462:FindFirstChild("Humanoid")
+
+                        if Humanoid then
+                            Humanoid = v462:FindFirstChild("HumanoidRootPart")
+
+                            if Humanoid then
+                                Humanoid = v462.Humanoid.Health > 0
+                            end
+                        end
+
+                        if Humanoid then
+                            repeat
+                                task.wait()
+
+                                if not t2.value57 then
+                                    break
+                                end
+
+                                AutoHaki()
+                                autoEquiTool(t2.value22)
+                                v462.HumanoidRootPart.CanCollide = false
+                                v462.Humanoid.WalkSpeed = 0
+                                v462.HumanoidRootPart.Size = Vector3.new(50, 50, 50)
+
+                                local Ring = t2.value5._WorldOrigin:FindFirstChild("Ring")
+
+                                if not Ring then
+                                    Ring = t2.value5._WorldOrigin:FindFirstChild("Fist")
+
+                                    if not Ring then
+                                        Ring = t2.value5._WorldOrigin:FindFirstChild("MochiSwirl")
+                                    end
+                                end
+
+                                if Ring then
+                                    topos(v462.HumanoidRootPart.CFrame * CFrame.new(0, -40, 0))
+                                else
+                                    topos(v462.HumanoidRootPart.CFrame * CFrame.new(4, 10, 10))
+                                end
+
+                                local v465 = not t2.value57
+
+                                if not v465 then
+                                    v465 = not v462.Parent
+
+                                    if not v465 then
+                                        v465 = v462.Humanoid.Health <= 0
+                                    end
+                                end
+                            until v465
+
+                            wait(1)
+
+                            return
+                        end
+                    else
+                        local v466 = false
+                        local _pairs = pairs
+                        local v468, v469, v470 = _pairs(t24)
+                        local g472
+                        repeat
+                            local v471
+
+                            v470, v471 = v468(v469, v470)
+
+                            if not v470 then
+                                g472 = true
+                            end
+
+                            if g472 then
+                                break
+                            end
+
+                            _pairs = t2.value13
+                        until _pairs:FindFirstChild(v471)
+                        if not g472 then
+                            v466 = true
+                        end
+                        if v466 then
+                            for _, child in pairs(t2.value13:GetChildren()) do
+                                local v475 = table.find(t24, child.Name)
+
+                                if v475 then
+                                    v475 = child:FindFirstChild("Humanoid")
+
+                                    if v475 then
+                                        v475 = child:FindFirstChild("HumanoidRootPart")
+
+                                        if v475 then
+                                            v475 = child.Humanoid.Health > 0
+                                        end
+                                    end
+                                end
+
+                                if not v475 then
+                                    continue
+                                end
+
+                                while true do
+                                    task.wait()
+
+                                    if not t2.value57 then
+                                        break
+                                    end
+
+                                    AutoHaki()
+                                    autoEquiTool(t2.value22)
+                                    child.HumanoidRootPart.CanCollide = false
+                                    child.Humanoid.WalkSpeed = 0
+                                    child.HumanoidRootPart.Size = Vector3.new(50, 50, 50)
+                                    child.Head.CanCollide = false
+                                    topos(child.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+
+                                    local v476 = not t2.value57
+
+                                    if not v476 then
+                                        v476 = not child.Parent
+
+                                        if not v476 then
+                                            v476 = child.Humanoid.Health <= 0
+
+                                            if not v476 then
+                                                v476 = t2.value5.Map.CakeLoaf.BigMirror.Other.Transparency == 0
+
+                                                if not v476 then
+                                                    v476 = t2.value1:FindFirstChild("Cake Prince [Lv. 2300] [Raid Boss]")
+
+                                                    if not v476 then
+                                                        v476 = t2.value13:FindFirstChild("Cake Prince [Lv. 2300] [Raid Boss]")
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    end
+
+                                    if v476 then
+                                        break
+                                    end
+                                end
+                            end
+                        else
+                            topos(t25[math.random(1, #t25)])
+                        end
+                        topos(cFrame)
+                    end
+                end)
+            end
+        end
+    end)
+end
+t2.value76 = workspace.CurrentCamera
+t2.value77 = {}
+t2.value78 = {}
+function t2.value79(p62)
+    local drawing = Drawing.new("Square")
+
+    drawing.Visible = false
+    drawing.Color = Color3.fromRGB(0, 255, 0)
+    drawing.Thickness = 1
+    drawing.Transparency = 1
+    drawing.Filled = false
+
+    local drawing2 = Drawing.new("Text")
+
+    drawing2.Visible = false
+    drawing2.Size = 13
+    drawing2.Center = true
+    drawing2.Outline = true
+    drawing2.Color = Color3.fromRGB(0, 255, 0)
+
+    local drawing3 = Drawing.new("Text")
+
+    drawing3.Visible = false
+    drawing3.Size = 13
+    drawing3.Center = true
+    drawing3.Outline = true
+    drawing3.Color = Color3.fromRGB(0, 255, 0)
+    t2.value77[p62] = {
+		Box = drawing,
+		Name = drawing2,
+		Distance = drawing3
+	}
+end
+t2.value2.PlayerRemoving:Connect(function(player)
+    if t2.value77[player] then
+        for _, v in pairs(t2.value77[player]) do
+            v:Remove()
+        end
+
+        t2.value77[player] = nil
+    end
+end)
+t2.value3.RenderStepped:Connect(function()
+    local _pairs = pairs
+
+    for _, v308 in _pairs(t2.value2:GetPlayers()) do
+        local v309 = v308 ~= t2.value6
+
+        if v309 then
+            v309 = v308.Character
+
+            if v309 then
+                v309 = v308.Character:FindFirstChild("HumanoidRootPart")
+            end
+        end
+
+        if v309 then
+            if not t2.value77[v308] then
+                t2.value79(v308)
+            end
+
+            local HumanoidRootPart = v308.Character.HumanoidRootPart
+            local Humanoid = v308.Character:FindFirstChildOfClass("Humanoid")
+            local v312, v313 = t2.value76:WorldToViewportPoint(HumanoidRootPart.Position)
+            local v314 = t2.value77[v308]
+
+            if v313 then
+                if Humanoid then
+                    Humanoid = Humanoid.Health > 0 and t2.value44
+                end
+
+                v313 = Humanoid
+            end
+
+            if v313 then
+                local Head = v308.Character:FindFirstChild("Head")
+                local v316 = t2.value76:WorldToViewportPoint(Head.Position + Vector3.new(0, 0.5, 0))
+                local v317 = t2.value76:WorldToViewportPoint(HumanoidRootPart.Position - Vector3.new(0, 3, 0))
+                local v318 = math.abs(v316.Y - v317.Y)
+                local v319 = v318 / 2
+
+                v314.Box.Size = Vector2.new(v319, v318)
+                v314.Box.Position = Vector2.new(v312.X - v319 / 2, v312.Y - v318 / 2)
+                v314.Box.Visible = true
+                v314.Name.Text = v308.Name
+                v314.Name.Position = Vector2.new(v312.X, v312.Y - v318 / 2 - 16)
+                v314.Name.Visible = true
+                v314.Distance.Text = string.format("%dm", (math.floor((t2.value76.CFrame.Position - HumanoidRootPart.Position).Magnitude)))
+                v314.Distance.Position = Vector2.new(v312.X, v312.Y + v318 / 2 + 2)
+                _pairs = v314.Distance
+                _pairs.Visible = true
+            else
+                v314.Box.Visible = false
+                v314.Name.Visible = false
+                _pairs = v314.Distance
+                _pairs.Visible = false
+            end
+        elseif t2.value77[v308] then
+            t2.value77[v308].Box.Visible = false
+            t2.value77[v308].Name.Visible = false
+            _pairs = t2.value77[v308].Distance
+            _pairs.Visible = false
+        end
+    end
+end)
+
+function t2.value80(p63)
+    local drawing = Drawing.new("Text")
+
+    drawing.Visible = false
+    drawing.Size = 14
+    drawing.Center = true
+    drawing.Outline = true
+    drawing.Color = Color3.fromRGB(255, 170, 0)
+    t2.value78[p63] = drawing
+end
+function t2.value81(p64)
+    if t2.value78[p64] then
+        t2.value78[p64]:Remove()
+        t2.value78[p64] = nil
+    end
+end
+workspace.ChildRemoved:Connect(function(child)
+    if child:IsA("Tool") then
+        t2.value81(child)
+    end
+end)
+t2.value3.RenderStepped:Connect(function()
+    for _, child in ipairs(workspace:GetChildren()) do
+        if child:IsA("Tool") then
+            if not t2.value78[child] then
+                t2.value80(child)
+            end
+
+            local Handle = child:FindFirstChild("Handle")
+
+            if Handle then
+                local v327, v328 = t2.value76:WorldToViewportPoint(Handle.Position)
+                local v329 = t2.value78[child]
+
+                if v328 then
+                    v328 = t2.value45
+                end
+
+                if v328 then
+                    v329.Text = child.Name
+                    v329.Position = Vector2.new(v327.X, v327.Y)
+                    v329.Visible = true
+                else
+                    v329.Visible = false
+                end
+            end
+        end
+    end
+end)
+t2.value82 = t2.value7:WaitForChild("HumanoidRootPart")
+t2.value83 = t2.value7:WaitForChild("Humanoid")
+t2.value84 = nil
+function t2.value84()
+    local n4 = 1e999
+    local v331
+    for _, child in ipairs(workspace:GetChildren()) do
+        local v334 = child:IsA("Tool")
+
+        if v334 then
+            v334 = child:FindFirstChild("Handle")
+        end
+
+        if v334 then
+            local Magnitude = (t2.value82.Position - child.Handle.Position).Magnitude
+
+            if Magnitude < n4 then
+                n4 = Magnitude
+                v331 = child
+            end
+        end
+    end
+
+    return v331
+end
+function t2.value85()
+    local v336 = t2.value84()
+
+    if v336 and v336:FindFirstChild("Handle") then
+        t2.value83:MoveTo(v336.Handle.Position)
+        t2.value83.MoveToFinished:Wait(5)
+    end
+end
+t5.Misc:CreateToggle({
+	name = "Tween To Fruit Dropped",
+	description = "Move naturally to the nearest fruit",
+	value = false,
+	callback = function(p65)
+    t2.value46 = p65
+
+    if p65 then
+        task.spawn(function()
+            while t2.value46 do
+                t2.value85()
+                task.wait(1)
+            end
+        end)
+    end
+end
+})
+t5.Misc:CreateToggle({
+	name = "ESP Fruit",
+	description = "Show name of all dropped fruit",
+	value = false,
+	callback = function(p66)
+    if not p66 then
+        for _, v in pairs(t2.value78) do
+            v.Visible = false
+        end
+    end
+end
+})
+t5.Misc:CreateToggle({
+	name = "ESP Player",
+	description = "Show name, box, and distance",
+	value = false,
+	callback = function(p67)
+    t2.value44 = p67
+end
+})
+t5.Misc:CreateToggle({
+	name = "Auto Attack",
+	value = true,
+	callback = function(p68)
+    iSAttack = p68
+
+    if t2.value27 then
+        task.cancel(t2.value27)
+    end
+
+    if p68 then
+        task.spawn(function()
+            while iSAttack do
+                Attack()
+                Attack()
+                Attack()
+                task.wait()
+            end
+        end)
+    end
+end
+})
+t5.Misc:CreateToggle({
+	name = "Freeze Character",
+	value = false,
+	description = "Stops movement but allows fishing.",
+	callback = function(p69)
+    local value8CFrame
+    while p69 do
+        if value8CFrame == nil then
+            value8CFrame = t2.value8.CFrame
+        end
+
+        t2.value8.CFrame = value8CFrame
+        t2.value8.Velocity = Vector3.zero
+        task.wait()
+    end
+end
+})
+local Energy = t2.value7:WaitForChild("Energy")
+
+t2.value86 = nil
+t2.value86 = Energy
+function t2.value87(p70)
+    if p70 then
+        t2.value3.Heartbeat:Connect(function()
+            t2.value86.Value = 99999999
+        end)
+    end
+end
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            local v477 = t2.value5.Map["WaterBase-Plane"]
+            local value43 = t2.value43
+
+            if value43 then
+                value43 = Vector3.new(1000, 112, 1000)
+            end
+
+            if not value43 then
+                value43 = Vector3.new(1000, 80, 1000)
+            end
+
+            v477.Size = value43
+        end)
+    end
+end)
+t5.Misc:CreateToggle({
+	name = "Infinite Energy",
+	value = false,
+	description = "Toggle to enable or disable infinite energy.",
+	callback = function(p71)
+    t2.value87(p71)
+end
+})
+t5.Misc:CreateToggle({
+	name = "Walk On Water",
+	description = "if you are underwater and turn this on, it will automatically be above",
+	value = true,
+	callback = function(p72)
+    t2.value43 = p72
+end
+})
+t5.Misc:CreateToggle({
+	name = "Noclip",
+	description = "Penetrates all walls or objects",
+	value = false,
+	callback = function(p73)
+    t2.value42 = p73
+end
+})
+t5.Misc:CreateToggle({
+	name = "Delete All Characters",
+	value = false,
+	callback = function(p74)
+    if p74 then
+        for _, player in ipairs(t2.value2:GetPlayers()) do
+            if player ~= t2.value6 and player.Character then
+                player.Character:Destroy()
+            end
+        end
+    end
+end
+})
+t5.Misc:CreateButton({
+	name = "Redeem All Codes",
+	description = "Redeem all code 2x EXP and Stats",
+	callback = function()
+    local Redeem = t2.value1:WaitForChild("Remotes"):WaitForChild("Redeem")
+
+    for _, v in ipairs({
+			"SUB2CAPTAINMAUI",
+			"KITTGAMING",
+			"SUB2FER999",
+			"ENYU_IS_PRO",
+			"MAGICBUS",
+			"JCWK",
+			"STARCODEHEO",
+			"BLUXXY",
+			"SUB2NOOBMASTER123",
+			"SUB2DAIGROCK",
+			"AXIORE",
+			"TANTAIGAMING",
+			"STRAWHATMAINE",
+			"SUB2OFFICIALNOOBIE",
+			"THEGREATACE",
+			"SUB2GAMERROBOT_EXP1",
+			"KITT_RESET",
+			"SUB2UNCLEKIZARU",
+			"SUB2GAMERROBOT_RESET1",
+			"BIGNEWS",
+			"FUDD10",
+			"FUDD10_V2"
+		}) do
+        local v175 = v
+
+        pcall(function()
+            Redeem:InvokeServer(v175)
+        end)
+    end
+end
+})
+t5.Shop:CreateSection({
+	name = "Reset"
+})
+t5.Shop:CreateButton({
+	name = "Reset Stats 2,500F",
+	description = "Click to Reset your stats",
+	callback = function()
+    t2.value15:InvokeServer("BlackbeardReward", "Refund", "1")
+    t2.value15:InvokeServer("BlackbeardReward", "Refund", "2")
+end
+})
+t5.Shop:CreateButton({
+	name = "Random Race 3,000F",
+	description = "Click to Get Random Race",
+	callback = function()
+    t2.value15:InvokeServer("BlackbeardReward", "Reroll", "1")
+    t2.value15:InvokeServer("BlackbeardReward", "Reroll", "2")
+end
+})
+t5.Shop:CreateSection({
+	name = "Swords"
+})
+t5.Shop:CreateDropdown({
+	name = "Select Weapon to Buy",
+	description = "Choose which weapon to purchase",
+	options = {
+		"Katana",
+		"Cutlass",
+		"Dual Katana",
+		"Iron Mace",
+		"Slingshot",
+		"Musket",
+		"Flintlock"
+	},
+	value = "Katana",
+	callback = function(p75)
+    t2.value35 = p75
+end
+})
+t5.Shop:CreateButton({
+	name = "Buy Selected Weapon",
+	description = "Click to buy the selected weapon",
+	callback = function()
+    pcall(function()
+        t2.value15:InvokeServer("BuyItem", t2.value35)
+    end)
+end
+})
+t5.Shop:CreateSection({
+	name = "Fighting Style"
+})
+t5.Shop:CreateDropdown({
+	name = "Select Fighting Style to Buy",
+	description = "Choose which Fighting Style to purchase",
+	options = {
+		"Black Leg",
+		"Electro",
+		"Fishman Karate",
+		"Sharkman Karate",
+		"Dragon Claw",
+		"Superhuman",
+		"Death Step",
+		"Electric Claw",
+		"Dragon Talon",
+		"Godhuman",
+		"Sanguine Art"
+	},
+	value = "Black Leg",
+	callback = function(p76)
+    t2.value36 = p76
+end
+})
+t5.Shop:CreateButton({
+	name = "Buy Selected Fighting Style",
+	description = "Click to buy the selected Fighting Style",
+	callback = function()
+    local value36 = t2.value36
+
+    if value36 == "Black Leg" then
+        t2.value15:InvokeServer("BuyBlackLeg")
+
+        return
+    end
+
+    if value36 == "Electro" then
+        t2.value15:InvokeServer("BuyElectro")
+
+        return
+    end
+
+    if value36 == "Fishman Karate" then
+        t2.value15:InvokeServer("BuyFishmanKarate")
+
+        return
+    end
+
+    if value36 == "Dragon Claw" then
+        t2.value15:InvokeServer("BlackbeardReward", "DragonClaw", "1")
+        t2.value15:InvokeServer("BlackbeardReward", "DragonClaw", "2")
+
+        return
+    end
+
+    if value36 == "Death Step" then
+        t2.value15:InvokeServer("BuyDeathStep")
+
+        return
+    end
+
+    if value36 == "Superhuman" then
+        t2.value15:InvokeServer("BuySuperhuman")
+
+        return
+    end
+
+    if value36 == "Electric Claw" then
+        t2.value15:InvokeServer("BuyElectricClaw")
+
+        return
+    end
+
+    if value36 == "Dragon Talon" then
+        t2.value15:InvokeServer("BuyDragonTalon")
+
+        return
+    end
+
+    if value36 == "Godhuman" then
+        t2.value15:InvokeServer("BuyGodhuman")
+
+        return
+    end
+
+    if value36 == "Sanguine Art" then
+        t2.value15:InvokeServer("BuySanguineArt", true)
+        t2.value15:InvokeServer("BuySanguineArt")
+
+        return
+    end
+
+    if value36 == "Sharkman Karate" then
+        t2.value15:InvokeServer("BuySharkmanKarate", true)
+        t2.value15:InvokeServer("BuySharkmanKarate")
+    end
+end
+})
+t5.Shop:CreateSection({
+	name = "Gun"
+})
+t5.Shop:CreateDropdown({
+	name = "Select Gun to Buy",
+	description = "Choose which Gun to purchase",
+	options = {
+		"Slingshot",
+		"Musket",
+		"Flintlock",
+		"Refined Flintlock",
+		"Cannon",
+		"Kabucha",
+		"Bizarre Rifle"
+	},
+	value = "Slingshot",
+	callback = function(p77)
+    t2.value37 = p77
+end
+})
+t5.Shop:CreateButton({
+	name = "Buy Selected Gun",
+	description = "Click to buy the selected Gun",
+	callback = function()
+    local value37 = t2.value37
+
+    if value37 == "Kabucha" then
+        t2.value15:InvokeServer("BlackbeardReward", "Slingshot", "1")
+        t2.value15:InvokeServer("BlackbeardReward", "Slingshot", "2")
+
+        return
+    end
+
+    if value37 == "Bizarre Rifle" then
+        t2.value15:InvokeServer("Ectoplasm", "Buy", 1)
+
+        return
+    end
+
+    t2.value15:InvokeServer("BuyItem", value37)
+end
+})
+t5.Shop:CreateSection({
+	name = "Accessories"
+})
+t5.Shop:CreateDropdown({
+	name = "Select Accessories to Buy",
+	description = "Choose which Accessories to purchase",
+	options = {
+		"Black Cape",
+		"Swordsman Hat",
+		"Tomoe Ring"
+	},
+	value = "Black Cape",
+	callback = function(p78)
+    t2.value38 = p78
+end
+})
+t5.Shop:CreateButton({
+	name = "Buy Selected Accessories",
+	description = "Click to buy the selected Accessories",
+	callback = function()
+    t2.value15:InvokeServer("BuyItem", t2.value38)
+end
+})
+t5.Shop:CreateSection({
+	name = "Buy Fruit"
+})
+t5.Shop:CreateDropdown({
+	name = "Select Fruit to Buy",
+	description = "Choose which fruit to purchase",
+	options = {
+		"Light-Light",
+		"Diamond-Diamond",
+		"Spin-Spin",
+		"Bomb-Bomb",
+		"Flame-Flame",
+		"Ice-Ice",
+		"Kilo-Kilo"
+	},
+	callback = function(p79)
+    t2.value39 = p79
+end
+})
+t5.Shop:CreateButton({
+	name = "Buy Selected Fruit",
+	description = "Click to buy the selected fruit",
+	callback = function()
+    if not t2.value39 then
+        return
+    end
+
+    pcall(function()
+        t2.value15:InvokeServer("PurchaseRawFruit", t2.value39, false)
+    end)
+end
+})
+t5.Shop:CreateButton({
+	name = "Gacha Fruit",
+	description = "If it's cooldown, then you can't Gacha",
+	callback = function()
+    t2.value15:InvokeServer("Cousin", "Buy")
+end
+})
+NoclipConnection = t2.value3.Stepped:Connect(function()
+    if t2.value42 and t2.value7 then
+        for _, descendant in pairs(t2.value7:GetDescendants()) do
+            if descendant:IsA("BasePart") and descendant.CanCollide then
+                descendant.CanCollide = false
+            end
+        end
+    end
+end)
